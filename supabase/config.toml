@@ -1,0 +1,20 @@
+# =============================================================================
+# Masalan Business Enterprise — Supabase project configuration.
+#
+# Settings here are applied when Edge Functions are deployed with the
+# Supabase CLI (`supabase functions deploy`).
+#
+# The daily schedule itself is defined in Postgres via pg_cron:
+#   supabase/migrations/002_keep_alive_schedule.sql
+# =============================================================================
+
+project_id = "masalan-business-enterprise"
+
+[functions.keep_alive]
+# The pg_cron / pg_net scheduled job invokes the function with an HTTP POST
+# but does NOT issue a JWT, so JWT verification is disabled for this function.
+#
+# This is safe because the function is read-only (a `select id limit 1`
+# against `businesses`), returns no sensitive data, and the service-role key
+# is used only server-side where Supabase injects it as an env variable.
+verify_jwt = false
