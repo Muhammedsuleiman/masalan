@@ -476,7 +476,6 @@ export async function fetchCustomerCreditSummaries(search?: string): Promise<Cus
       'id, customer_id, amount_outstanding, payment_status, customer:customers(id, name, phone)',
     )
     .gt('amount_outstanding', 0)
-    .order('customer.name', { ascending: true })
 
   if (error) throw new Error(getFriendlyError(error))
 
