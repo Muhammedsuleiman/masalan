@@ -52,16 +52,20 @@ export default function DeveloperDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-brand-950">System Console</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            Technical status and diagnostics. Financial business data is intentionally not shown here.
-          </p>
+      <div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+              System Console
+            </h1>
+            <p className="mt-1 text-sm text-ink-soft">
+              Technical status and diagnostics. Financial business data is intentionally not shown here.
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => void load()} loading={loading}>
+            <RefreshCw className="h-4 w-4" /> Refresh status
+          </Button>
         </div>
-        <Button variant="outline" onClick={() => void load()} loading={loading}>
-          <RefreshCw className="h-4 w-4" /> Refresh status
-        </Button>
       </div>
 
       {error && (
@@ -128,14 +132,14 @@ export default function DeveloperDashboardPage() {
             <Card padded className="lg:col-span-2">
               <CardHeader title="Database record counts" subtitle="Read-only technical metrics" />
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <CountCell label="Businesses" value={status.database.counts.businesses} />
-                <CountCell label="Products" value={status.database.counts.products} />
-                <CountCell label="Profiles" value={status.database.counts.profiles} />
-                <CountCell label="Audit entries" value={status.database.counts.auditLogs} />
+                <CountCell tone="gold" label="Businesses" value={status.database.counts.businesses} />
+                <CountCell tone="brown" label="Products" value={status.database.counts.products} />
+                <CountCell tone="green" label="Profiles" value={status.database.counts.profiles} />
+                <CountCell tone="blue" label="Audit entries" value={status.database.counts.auditLogs} />
               </div>
-              <div className="mt-4 flex items-center gap-2 rounded-xl bg-cream-100/70 p-3 text-sm">
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-100 to-cream-100 p-3 text-sm">
                 <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                <span className="text-ink-soft">{rlseNote || 'Row Level Security gate check pending.'}</span>
+                <span className="text-emerald-900">{rlseNote || 'Row Level Security gate check pending.'}</span>
               </div>
             </Card>
           </div>
@@ -222,9 +226,17 @@ function ConfigRow({ label, value, safe }: { label: string; value: string; safe?
   )
 }
 
-function CountCell({ label, value }: { label: string; value: number | null }) {
+type CountTone = 'brown' | 'gold' | 'green' | 'blue'
+const countTones: Record<CountTone, string> = {
+  brown: 'bg-gradient-to-br from-brand-100 to-cream-100',
+  gold: 'bg-gradient-to-br from-gold-100 to-cream-100',
+  green: 'bg-gradient-to-br from-emerald-100 to-cream-100',
+  blue: 'bg-gradient-to-br from-sky-100 to-cream-100',
+}
+
+function CountCell({ label, value, tone = 'brown' }: { label: string; value: number | null; tone?: CountTone }) {
   return (
-    <div className="rounded-xl bg-cream-100/70 p-4 text-center">
+    <div className={`rounded-xl p-4 text-center ${countTones[tone]}`}>
       <p className="text-2xl font-extrabold text-brand-950">{value ?? '—'}</p>
       <p className="text-xs font-semibold text-ink-faint">{label}</p>
     </div>

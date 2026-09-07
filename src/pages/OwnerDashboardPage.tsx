@@ -90,16 +90,20 @@ export default function OwnerDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-brand-950">Business Overview</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            {isAll
-              ? `Combined performance across ${businesses.map((b) => b.name).join(' and ') || 'all businesses'}.`
-              : names.get(filters.businessId) ?? 'Selected business'}
-          </p>
+      <div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+              Business Overview
+            </h1>
+            <p className="mt-1 text-sm text-ink-soft">
+              {isAll
+                ? `Combined performance across ${businesses.map((b) => b.name).join(' and ') || 'all businesses'}.`
+                : names.get(filters.businessId) ?? 'Selected business'}
+            </p>
+          </div>
+          <FilterBar businesses={businesses} filters={filters} onChange={setFilters} />
         </div>
-        <FilterBar businesses={businesses} filters={filters} onChange={setFilters} />
       </div>
 
       {error && (
@@ -116,20 +120,20 @@ export default function OwnerDashboardPage() {
         <>
           {/* Overall metrics */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard label="Total sales" value={formatNaira(stats.revenue)} icon={Receipt} tone="brown" sub={`${stats.salesCount} sale${stats.salesCount === 1 ? '' : 's'}`} />
-            <StatCard label="Payments received" value={formatNaira(stats.paymentsReceived)} icon={Wallet} tone="gold" sub={`${stats.paymentsCount} payment${stats.paymentsCount === 1 ? '' : 's'}`} />
-            <StatCard label="Outstanding credit" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" sub={`${stats.outstandingCreditCount} open sale${stats.outstandingCreditCount === 1 ? '' : 's'}`} />
-            <StatCard label="Expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="blue" sub={`${stats.expenseCount} expense${stats.expenseCount === 1 ? '' : 's'}`} />
-            <StatCard label="Net position" value={formatNaira(stats.netPosition)} icon={Scale} tone="green" sub="Payments received − expenses" />
-            <StatCard label="Total net position" value={formatNaira(lifetimeNet ?? 0)} icon={Scale} tone="cream" sub="All-time payments received − expenses" />
-            <StatCard label="Cash received" value={formatNaira(stats.cashReceived)} icon={Banknote} tone="green" />
-            <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Layers} tone="gold" />
-            <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" sub={`${stats.creditSalesCount} not fully paid`} />
+            <StatCard label="Total sales" value={formatNaira(stats.revenue)} icon={Receipt} tone="brown" variant="colorful" sub={`${stats.salesCount} sale${stats.salesCount === 1 ? '' : 's'}`} />
+            <StatCard label="Payments received" value={formatNaira(stats.paymentsReceived)} icon={Wallet} tone="gold" variant="colorful" sub={`${stats.paymentsCount} payment${stats.paymentsCount === 1 ? '' : 's'}`} />
+            <StatCard label="Outstanding credit" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" variant="colorful" sub={`${stats.outstandingCreditCount} open sale${stats.outstandingCreditCount === 1 ? '' : 's'}`} />
+            <StatCard label="Expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="blue" variant="colorful" sub={`${stats.expenseCount} expense${stats.expenseCount === 1 ? '' : 's'}`} />
+            <StatCard label="Net position" value={formatNaira(stats.netPosition)} icon={Scale} tone="green" variant="colorful" sub="Payments received − expenses" />
+            <StatCard label="Total net position" value={formatNaira(lifetimeNet ?? 0)} icon={Scale} tone="cream" variant="colorful" sub="All-time payments received − expenses" />
+            <StatCard label="Cash received" value={formatNaira(stats.cashReceived)} icon={Banknote} tone="green" variant="colorful" />
+            <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Layers} tone="gold" variant="colorful" />
+            <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" variant="colorful" sub={`${stats.creditSalesCount} not fully paid`} />
           </div>
 
           {/* Low-stock alert */}
           {lowStock.length > 0 && (
-            <Card className="border-red-100 bg-red-50/40">
+            <Card className="border-red-200 bg-gradient-to-br from-red-50 via-cream-50 to-cream-100">
               <CardHeader
                 title="Low-stock alert"
                 subtitle={`${lowStock.length} product${lowStock.length === 1 ? '' : 's'} at or below reorder level`}
@@ -163,14 +167,14 @@ export default function OwnerDashboardPage() {
                   <Card key={b.id}>
                     <CardHeader title={b.name} subtitle={b.description ?? 'Business operation'} />
                     <div className="grid grid-cols-2 gap-3">
-                      <MiniMetric label="Revenue" value={formatNaira(bizStats.revenue)} />
-                      <MiniMetric label="Units sold" value={formatQuantity(sumQty(bizStats))} />
-                      <MiniMetric label="Cash received" value={formatNaira(bizStats.cashReceived)} />
-                      <MiniMetric label="Bank transfers" value={formatNaira(bizStats.bankReceived)} />
-                      <MiniMetric label="Credit (not fully paid)" value={formatNaira(bizStats.creditExtended)} sub={`${bizStats.creditSalesCount} sales`} />
-                      <MiniMetric label="Partial payments" value={String(bizStats.partialSalesCount)} sub="sales" />
-                      <MiniMetric label="Expenses" value={formatNaira(bizStats.expensesTotal)} />
-                      <MiniMetric label="Outstanding amount" value={formatNaira(bizStats.outstandingCredit)} />
+                      <MiniMetric tone="brown" label="Revenue" value={formatNaira(bizStats.revenue)} />
+                      <MiniMetric tone="blue" label="Units sold" value={formatQuantity(sumQty(bizStats))} />
+                      <MiniMetric tone="green" label="Cash received" value={formatNaira(bizStats.cashReceived)} />
+                      <MiniMetric tone="gold" label="Bank transfers" value={formatNaira(bizStats.bankReceived)} />
+                      <MiniMetric tone="red" label="Credit (not fully paid)" value={formatNaira(bizStats.creditExtended)} sub={`${bizStats.creditSalesCount} sales`} />
+                      <MiniMetric tone="amber" label="Partial payments" value={String(bizStats.partialSalesCount)} sub="sales" />
+                      <MiniMetric tone="blue" label="Expenses" value={formatNaira(bizStats.expensesTotal)} />
+                      <MiniMetric tone="red" label="Outstanding amount" value={formatNaira(bizStats.outstandingCredit)} />
                     </div>
                   </Card>
                 )
@@ -249,10 +253,20 @@ export default function OwnerDashboardPage() {
   )
 }
 
-function MiniMetric({ label, value, sub }: { label: string; value?: string | number | null; sub?: string }) {
+type MiniTone = 'brown' | 'gold' | 'green' | 'red' | 'blue' | 'amber'
+const miniTones: Record<MiniTone, string> = {
+  brown: 'bg-gradient-to-br from-brand-100 to-cream-100 text-brand-900',
+  gold: 'bg-gradient-to-br from-gold-100 to-cream-100 text-gold-800',
+  green: 'bg-gradient-to-br from-emerald-100 to-cream-100 text-emerald-800',
+  red: 'bg-gradient-to-br from-red-100 to-cream-100 text-red-700',
+  blue: 'bg-gradient-to-br from-sky-100 to-cream-100 text-sky-800',
+  amber: 'bg-gradient-to-br from-amber-100 to-cream-100 text-amber-800',
+}
+
+function MiniMetric({ label, value, sub, tone = 'brown' }: { label: string; value?: string | number | null; sub?: string; tone?: MiniTone }) {
   return (
-    <div className="rounded-xl bg-cream-100/70 p-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">{label}</p>
+    <div className={`rounded-xl p-3 ${miniTones[tone]}`}>
+      <p className={`text-[11px] font-semibold uppercase tracking-wide ${tone === 'red' ? 'text-red-600/80' : 'text-ink-faint'}`}>{label}</p>
       <p className="mt-0.5 text-base font-extrabold text-brand-950">
         {value ?? '₦0.00'}
       </p>

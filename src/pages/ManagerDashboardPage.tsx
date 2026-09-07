@@ -49,14 +49,18 @@ export default function ManagerDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-brand-950">Today's Operations</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            Quick overview of today's activity — {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}.
-          </p>
+<div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+              Today's Operations
+            </h1>
+            <p className="mt-1 text-sm text-ink-soft">
+              Quick overview of today's activity — {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}.
+            </p>
+          </div>
+          <FilterBar businesses={businesses} filters={filters} onChange={setFilters} />
         </div>
-        <FilterBar businesses={businesses} filters={filters} onChange={setFilters} />
       </div>
 
       {/* Quick actions */}
@@ -65,7 +69,7 @@ export default function ManagerDashboardPage() {
           <Link
             key={a.label}
             to={a.to}
-            className="group flex items-center gap-3 rounded-2xl border border-brand-100 bg-white p-4 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift"
+            className="group flex items-center gap-3 rounded-2xl border border-brand-100 bg-gradient-to-br from-white to-cream-100/70 p-4 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift"
           >
             <div className={`shrink-0 rounded-xl p-2.5 ${a.tone}`}>
               <a.icon className="h-5 w-5" />
@@ -88,29 +92,29 @@ export default function ManagerDashboardPage() {
       ) : stats ? (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard label="Today's sales" value={formatNaira(stats.revenue)} icon={ShoppingBag} tone="brown" sub={`${stats.salesCount} sale${stats.salesCount === 1 ? '' : 's'}`} />
-            <StatCard label="Today's payments" value={formatNaira(stats.paymentsReceived)} icon={ArrowUpRight} tone="gold" sub={`${stats.paymentsCount} payment${stats.paymentsCount === 1 ? '' : 's'}`} />
-            <StatCard label="Today's expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="red" sub={`${stats.expenseCount} expense${stats.expenseCount === 1 ? '' : 's'}`} />
-            <StatCard label="Outstanding credit" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" sub={`${stats.outstandingCreditCount} open sale${stats.outstandingCreditCount === 1 ? '' : 's'}`} />
+            <StatCard label="Today's sales" value={formatNaira(stats.revenue)} icon={ShoppingBag} tone="brown" variant="colorful" sub={`${stats.salesCount} sale${stats.salesCount === 1 ? '' : 's'}`} />
+            <StatCard label="Today's payments" value={formatNaira(stats.paymentsReceived)} icon={ArrowUpRight} tone="gold" variant="colorful" sub={`${stats.paymentsCount} payment${stats.paymentsCount === 1 ? '' : 's'}`} />
+            <StatCard label="Today's expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="red" variant="colorful" sub={`${stats.expenseCount} expense${stats.expenseCount === 1 ? '' : 's'}`} />
+            <StatCard label="Outstanding credit" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" variant="colorful" sub={`${stats.outstandingCreditCount} open sale${stats.outstandingCreditCount === 1 ? '' : 's'}`} />
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card padded>
               <CardHeader title="Cash & bank" subtitle="How today's payments came in" />
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-cream-100/70 p-4">
-                  <p className="text-xs font-semibold text-ink-faint">Cash received</p>
+                <div className="rounded-xl bg-gradient-to-br from-emerald-100 to-cream-100 p-4">
+                  <p className="text-xs font-semibold text-emerald-700">Cash received</p>
                   <p className="mt-1 text-xl font-extrabold text-brand-950">{formatNaira(stats.cashReceived)}</p>
                 </div>
-                <div className="rounded-xl bg-cream-100/70 p-4">
-                  <p className="text-xs font-semibold text-ink-faint">Bank transfers</p>
+                <div className="rounded-xl bg-gradient-to-br from-gold-100 to-cream-100 p-4">
+                  <p className="text-xs font-semibold text-gold-700">Bank transfers</p>
                   <p className="mt-1 text-xl font-extrabold text-brand-950">{formatNaira(stats.bankReceived)}</p>
                 </div>
               </div>
-              <div className="mt-3 rounded-xl bg-cream-100/70 p-4">
-                <p className="text-xs font-semibold text-ink-faint">Credit extended today (not fully paid)</p>
-                <p className="mt-1 text-xl font-extrabold text-red-600">{formatNaira(stats.creditExtended)}</p>
-                <p className="text-xs text-ink-faint">{stats.creditSalesCount} sale{stats.creditSalesCount === 1 ? '' : 's'} on credit/partial</p>
+              <div className="mt-3 rounded-xl bg-gradient-to-br from-red-100 to-cream-100 p-4">
+                <p className="text-xs font-semibold text-red-600">Credit extended today (not fully paid)</p>
+                <p className="mt-1 text-xl font-extrabold text-red-700">{formatNaira(stats.creditExtended)}</p>
+                <p className="text-xs text-red-600/70">{stats.creditSalesCount} sale{stats.creditSalesCount === 1 ? '' : 's'} on credit/partial</p>
               </div>
             </Card>
 
