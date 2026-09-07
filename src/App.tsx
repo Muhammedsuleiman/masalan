@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -16,11 +17,12 @@ import ExpensesPage from './pages/ExpensesPage'
 import CustomersPage from './pages/CustomersPage'
 import ProductsPage from './pages/ProductsPage'
 import StaffPage from './pages/StaffPage'
-import ReportsPage from './pages/ReportsPage'
 import ActivityPage from './pages/ActivityPage'
 import UsersPage from './pages/UsersPage'
 import SettingsPage from './pages/SettingsPage'
 import NotFoundPage from './pages/NotFoundPage'
+
+const ReportsPage = lazy(() => import('./pages/ReportsPage'))
 
 const ALL_ROLES: Role[] = ['owner', 'manager', 'developer']
 const BUSINESS_ROLES: Role[] = ['owner', 'manager']
@@ -72,7 +74,7 @@ export default function App() {
               <Route path="/customers" element={<RoleGate roles={BUSINESS_ROLES}><CustomersPage /></RoleGate>} />
               <Route path="/products" element={<RoleGate roles={BUSINESS_ROLES}><ProductsPage /></RoleGate>} />
               <Route path="/staff" element={<RoleGate roles={BUSINESS_ROLES}><StaffPage /></RoleGate>} />
-              <Route path="/reports" element={<RoleGate roles={BUSINESS_ROLES}><ReportsPage /></RoleGate>} />
+              <Route path="/reports" element={<RoleGate roles={BUSINESS_ROLES}><Suspense fallback={<FullScreenLoader />}><ReportsPage /></Suspense></RoleGate>} />
               <Route path="/activity" element={<RoleGate roles={ALL_ROLES}><ActivityPage /></RoleGate>} />
               <Route path="/users" element={<RoleGate roles={['owner']}><UsersPage /></RoleGate>} />
               <Route path="/settings" element={<RoleGate roles={ALL_ROLES}><SettingsPage /></RoleGate>} />
