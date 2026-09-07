@@ -68,17 +68,17 @@ export default function CreditPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-red-100 bg-red-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-red-400">Total outstanding</p>
-          <p className="mt-1 text-2xl font-extrabold text-red-700">{formatNaira(totalOutstanding)}</p>
+        <Card className="border-red-400/20 bg-gradient-to-br from-red-950/70 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-red-300">Total outstanding</p>
+          <p className="mt-1 text-2xl font-extrabold text-red-300">{formatNaira(totalOutstanding)}</p>
         </Card>
-        <Card className="border-brand-100 bg-cream-100/60">
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Customers owing</p>
-          <p className="mt-1 text-2xl font-extrabold text-brand-950">{customerSummaries.length}</p>
+        <Card className="border-white/10 bg-gradient-to-br from-brand-800/90 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-300">Customers owing</p>
+          <p className="mt-1 text-2xl font-extrabold text-cream-50">{customerSummaries.length}</p>
         </Card>
-        <Card className="border-gold-100 bg-gold-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Open credit sales</p>
-          <p className="mt-1 text-2xl font-extrabold text-gold-800">{sales.length}</p>
+        <Card className="border-gold-400/20 bg-gradient-to-br from-gold-800/50 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-300">Open credit sales</p>
+          <p className="mt-1 text-2xl font-extrabold text-cream-50">{sales.length}</p>
         </Card>
       </div>
 

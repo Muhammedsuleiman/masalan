@@ -222,17 +222,17 @@ export default function ExpensesPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-red-100 bg-red-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-red-400">Total (active)</p>
-          <p className="mt-1 text-2xl font-extrabold text-red-700">{formatNaira(total)}</p>
+        <Card className="border-red-400/20 bg-gradient-to-br from-red-950/70 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-red-300">Total (active)</p>
+          <p className="mt-1 text-2xl font-extrabold text-red-300">{formatNaira(total)}</p>
         </Card>
-        <Card className="border-brand-100 bg-cream-100/60">
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Expense entries</p>
-          <p className="mt-1 text-2xl font-extrabold text-brand-950">{expenses.length}</p>
+        <Card className="border-white/10 bg-gradient-to-br from-brand-800/90 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-300">Expense entries</p>
+          <p className="mt-1 text-2xl font-extrabold text-cream-50">{expenses.length}</p>
         </Card>
-        <Card className="border-gold-100 bg-gold-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Average (active)</p>
-          <p className="mt-1 text-2xl font-extrabold text-gold-800">
+        <Card className="border-gold-400/20 bg-gradient-to-br from-gold-800/50 to-brand-950/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-300">Average (active)</p>
+          <p className="mt-1 text-2xl font-extrabold text-cream-50">
             {activeExpenses.length ? formatNaira(total / activeExpenses.length) : '₦0.00'}
           </p>
         </Card>

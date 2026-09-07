@@ -27,10 +27,10 @@ import { formatNaira, formatDateTime } from '../lib/money'
 import { useEffect } from 'react'
 
 const QUICK_ACTIONS = [
-  { label: 'New sale', desc: 'Record a sale', icon: ShoppingBag, to: '/sales/new', tone: 'bg-brand-100 text-brand-800' },
-  { label: 'Record payment', desc: 'Payment against a sale', icon: Wallet, to: '/payments?quick=1', tone: 'bg-gold-100 text-gold-700' },
-  { label: 'Add customer', desc: 'Individual or business', icon: UserPlus, to: '/customers?quick=1', tone: 'bg-emerald-100 text-emerald-700' },
-  { label: 'Record expense', desc: 'Outgoing business money', icon: TrendingDown, to: '/expenses?quick=1', tone: 'bg-sky-100 text-sky-700' },
+  { label: 'New sale', desc: 'Record a sale', icon: ShoppingBag, to: '/sales/new', tone: 'bg-brand-500 text-gold-200' },
+  { label: 'Record payment', desc: 'Payment against a sale', icon: Wallet, to: '/payments?quick=1', tone: 'bg-gold-500 text-brand-950' },
+  { label: 'Add customer', desc: 'Individual or business', icon: UserPlus, to: '/customers?quick=1', tone: 'bg-emerald-600 text-white' },
+  { label: 'Record expense', desc: 'Outgoing business money', icon: TrendingDown, to: '/expenses?quick=1', tone: 'bg-sky-600 text-white' },
 ]
 
 export default function ManagerDashboardPage() {
@@ -49,13 +49,13 @@ export default function ManagerDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-<div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+<div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-card backdrop-blur sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-gold-200 via-gold-300 to-gold-400 bg-clip-text text-transparent">
               Today's Operations
             </h1>
-            <p className="mt-1 text-sm text-ink-soft">
+            <p className="mt-1 text-sm text-cream-200/80">
               Quick overview of today's activity — {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}.
             </p>
           </div>
@@ -69,16 +69,16 @@ export default function ManagerDashboardPage() {
           <Link
             key={a.label}
             to={a.to}
-            className="group flex items-center gap-3 rounded-2xl border border-brand-100 bg-gradient-to-br from-white to-cream-100/70 p-4 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift"
+            className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-4 shadow-card backdrop-blur transition-all hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-lift"
           >
             <div className={`shrink-0 rounded-xl p-2.5 ${a.tone}`}>
               <a.icon className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold text-brand-950">{a.label}</p>
-              <p className="truncate text-xs text-ink-faint">{a.desc}</p>
+              <p className="text-sm font-bold text-cream-50">{a.label}</p>
+              <p className="truncate text-xs text-cream-200/60">{a.desc}</p>
             </div>
-            <PlusCircle className="ml-auto h-4 w-4 text-ink-faint opacity-0 transition-opacity group-hover:opacity-100" />
+            <PlusCircle className="ml-auto h-4 w-4 text-gold-400 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         ))}
       </div>
@@ -86,7 +86,7 @@ export default function ManagerDashboardPage() {
       {error && <Alert tone="error">{error}</Alert>}
 
       {loading && !data ? (
-        <div className="flex items-center justify-center py-24 text-brand-600">
+        <div className="flex items-center justify-center py-24 text-gold-400">
           <Spinner className="h-6 w-6" />
         </div>
       ) : stats ? (
@@ -99,31 +99,31 @@ export default function ManagerDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Card padded>
+            <Card className="border-white/10 bg-white/[0.06] backdrop-blur [&_h3]:text-cream-50 [&_p]:text-cream-200/70">
               <CardHeader title="Cash & bank" subtitle="How today's payments came in" />
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-gradient-to-br from-emerald-100 to-cream-100 p-4">
-                  <p className="text-xs font-semibold text-emerald-700">Cash received</p>
-                  <p className="mt-1 text-xl font-extrabold text-brand-950">{formatNaira(stats.cashReceived)}</p>
+                <div className="rounded-xl border border-emerald-400/20 bg-gradient-to-br from-emerald-900/50 to-brand-950/70 p-4">
+                  <p className="text-xs font-semibold text-emerald-300">Cash received</p>
+                  <p className="mt-1 text-xl font-extrabold text-cream-50">{formatNaira(stats.cashReceived)}</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-gold-100 to-cream-100 p-4">
-                  <p className="text-xs font-semibold text-gold-700">Bank transfers</p>
-                  <p className="mt-1 text-xl font-extrabold text-brand-950">{formatNaira(stats.bankReceived)}</p>
+                <div className="rounded-xl border border-gold-400/20 bg-gradient-to-br from-gold-800/50 to-brand-950/70 p-4">
+                  <p className="text-xs font-semibold text-gold-300">Bank transfers</p>
+                  <p className="mt-1 text-xl font-extrabold text-cream-50">{formatNaira(stats.bankReceived)}</p>
                 </div>
               </div>
-              <div className="mt-3 rounded-xl bg-gradient-to-br from-red-100 to-cream-100 p-4">
-                <p className="text-xs font-semibold text-red-600">Credit extended today (not fully paid)</p>
-                <p className="mt-1 text-xl font-extrabold text-red-700">{formatNaira(stats.creditExtended)}</p>
-                <p className="text-xs text-red-600/70">{stats.creditSalesCount} sale{stats.creditSalesCount === 1 ? '' : 's'} on credit/partial</p>
+              <div className="mt-3 rounded-xl border border-red-400/20 bg-gradient-to-br from-red-900/50 to-brand-950/70 p-4">
+                <p className="text-xs font-semibold text-red-300">Credit extended today (not fully paid)</p>
+                <p className="mt-1 text-xl font-extrabold text-red-300">{formatNaira(stats.creditExtended)}</p>
+                <p className="text-xs text-red-200/60">{stats.creditSalesCount} sale{stats.creditSalesCount === 1 ? '' : 's'} on credit/partial</p>
               </div>
             </Card>
 
-            <Card padded>
+            <Card className="border-white/10 bg-white/[0.06] backdrop-blur [&_h3]:text-cream-50 [&_p]:text-cream-200/70">
               <CardHeader
                 title="Recent activity"
                 subtitle="Latest recorded actions"
                 action={
-                  <div className="rounded-lg bg-cream-100 p-2 text-brand-700">
+                  <div className="rounded-lg bg-white/10 p-2 text-gold-400">
                     <ScrollText className="h-4 w-4" />
                   </div>
                 }
@@ -131,12 +131,12 @@ export default function ManagerDashboardPage() {
               {auditLogs.length === 0 ? (
                 <EmptyState icon={Clock} title="No activity yet" />
               ) : (
-                <ul className="divide-y divide-brand-50">
+                <ul className="divide-y divide-white/10">
                   {auditLogs.map((log) => (
                     <li key={log.id} className="flex items-center justify-between gap-3 py-2.5">
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-ink">{humanizeAction(log.action)}</p>
-                        <p className="truncate text-xs text-ink-faint">
+                        <p className="truncate text-sm font-semibold text-cream-50">{humanizeAction(log.action)}</p>
+                        <p className="truncate text-xs text-cream-200/60">
                           {log.user?.full_name || log.user?.email || 'User'} · {formatDateTime(log.created_at)}
                         </p>
                       </div>
@@ -145,7 +145,7 @@ export default function ManagerDashboardPage() {
                   ))}
                 </ul>
               )}
-              <Link to="/activity" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold-700 hover:text-gold-800">
+              <Link to="/activity" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold-400 hover:text-gold-300">
                 View full activity log <ArrowUpRight className="h-3.5 w-3.5" />
               </Link>
             </Card>

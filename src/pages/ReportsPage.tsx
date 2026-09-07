@@ -124,7 +124,7 @@ export default function ReportsPage() {
 
       <div className="print-block">
         {loading && !data ? (
-          <div className="flex items-center justify-center py-24 text-brand-600 no-print">
+          <div className="flex items-center justify-center py-24 text-gold-400 no-print">
             <Spinner className="h-6 w-6" />
           </div>
         ) : stats && data ? (
@@ -138,14 +138,14 @@ export default function ReportsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <StatCard label="Total sales" value={formatNaira(stats.revenue)} icon={Receipt} tone="brown" sub={`${stats.salesCount} sales`} />
-              <StatCard label="Payments received" value={formatNaira(stats.paymentsReceived)} icon={ArrowUpRight} tone="gold" sub={`${stats.paymentsCount} payments`} />
-              <StatCard label="Expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="red" sub={`${stats.expenseCount} entries`} />
-              <StatCard label="Net position" value={formatNaira(stats.netPosition)} icon={Scale} tone="green" sub="Payments − expenses" />
-              <StatCard label="Cash" value={formatNaira(stats.cashReceived)} icon={Wallet} tone="green" />
-              <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Wallet} tone="gold" />
-              <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" sub={`${stats.creditSalesCount} sales`} />
-              <StatCard label="Outstanding balance" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" sub={`${stats.outstandingCreditCount} sales`} />
+              <StatCard label="Total sales" value={formatNaira(stats.revenue)} icon={Receipt} tone="brown" variant="colorful" sub={`${stats.salesCount} sales`} />
+              <StatCard label="Payments received" value={formatNaira(stats.paymentsReceived)} icon={ArrowUpRight} tone="gold" variant="colorful" sub={`${stats.paymentsCount} payments`} />
+              <StatCard label="Expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="red" variant="colorful" sub={`${stats.expenseCount} entries`} />
+              <StatCard label="Net position" value={formatNaira(stats.netPosition)} icon={Scale} tone="green" variant="colorful" sub="Payments − expenses" />
+              <StatCard label="Cash" value={formatNaira(stats.cashReceived)} icon={Wallet} tone="green" variant="colorful" />
+              <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Wallet} tone="gold" variant="colorful" />
+              <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" variant="colorful" sub={`${stats.creditSalesCount} sales`} />
+              <StatCard label="Outstanding balance" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" variant="colorful" sub={`${stats.outstandingCreditCount} sales`} />
             </div>
 
             {Object.keys(stats.productQuantities).length > 0 && (

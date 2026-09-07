@@ -52,17 +52,17 @@ export default function DeveloperDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-      <div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-card backdrop-blur sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-gold-200 via-gold-300 to-gold-400 bg-clip-text text-transparent">
               System Console
             </h1>
-            <p className="mt-1 text-sm text-ink-soft">
+            <p className="mt-1 text-sm text-cream-200/80">
               Technical status and diagnostics. Financial business data is intentionally not shown here.
             </p>
           </div>
-          <Button variant="outline" onClick={() => void load()} loading={loading}>
+          <Button variant="outline" className="border-white/25 bg-white/10 text-cream-50 hover:bg-white/20 hover:text-cream-50" onClick={() => void load()} loading={loading}>
             <RefreshCw className="h-4 w-4" /> Refresh status
           </Button>
         </div>
@@ -75,7 +75,7 @@ export default function DeveloperDashboardPage() {
       )}
 
       {loading && !status ? (
-        <div className="flex items-center justify-center py-24 text-brand-600">
+        <div className="flex items-center justify-center py-24 text-gold-400">
           <Spinner className="h-6 w-6" />
         </div>
       ) : status ? (
@@ -118,7 +118,7 @@ export default function DeveloperDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <Card padded className="lg:col-span-1">
+            <Card className="border-white/10 bg-white/[0.06] backdrop-blur [&_h3]:text-cream-50 [&_p]:text-cream-200/70">
               <CardHeader title="Application configuration" subtitle="Environment summary — no secrets shown" />
               <dl className="space-y-3 text-sm">
                 <ConfigRow label="Project URL" value={status.config.url} />
@@ -129,7 +129,7 @@ export default function DeveloperDashboardPage() {
               </dl>
             </Card>
 
-            <Card padded className="lg:col-span-2">
+            <Card className="border-white/10 bg-white/[0.06] backdrop-blur [&_h3]:text-cream-50 [&_p]:text-cream-200/70">
               <CardHeader title="Database record counts" subtitle="Read-only technical metrics" />
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <CountCell tone="gold" label="Businesses" value={status.database.counts.businesses} />
@@ -137,19 +137,19 @@ export default function DeveloperDashboardPage() {
                 <CountCell tone="green" label="Profiles" value={status.database.counts.profiles} />
                 <CountCell tone="blue" label="Audit entries" value={status.database.counts.auditLogs} />
               </div>
-              <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-100 to-cream-100 p-3 text-sm">
-                <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                <span className="text-emerald-900">{rlseNote || 'Row Level Security gate check pending.'}</span>
+              <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-gradient-to-br from-emerald-900/50 to-brand-950/70 p-3 text-sm">
+                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                <span className="text-emerald-100">{rlseNote || 'Row Level Security gate check pending.'}</span>
               </div>
             </Card>
           </div>
 
-          <Card padded>
+          <Card className="border-white/10 bg-white/[0.06] backdrop-blur [&_h3]:text-cream-50 [&_p]:text-cream-200/70">
             <CardHeader
               title="System activity"
               subtitle="Most recent system-wide actions (from audit log)"
               action={
-                <div className="rounded-lg bg-cream-100 p-2 text-brand-700">
+                <div className="rounded-lg bg-white/10 p-2 text-gold-400">
                   <ScrollText className="h-4 w-4" />
                 </div>
               }
@@ -157,16 +157,16 @@ export default function DeveloperDashboardPage() {
             {logs.length === 0 ? (
               <EmptyState icon={Clock} title="No activity recorded" />
             ) : (
-              <ul className="divide-y divide-brand-50">
+              <ul className="divide-y divide-white/10">
                 {logs.map((log) => (
                   <li key={log.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-ink">{log.action}</p>
-                      <p className="truncate text-xs text-ink-faint">
+                      <p className="truncate text-sm font-semibold text-cream-50">{log.action}</p>
+                      <p className="truncate text-xs text-cream-200/60">
                         {log.user?.email ?? 'system'} · {log.entity_type} · {log.entity_id ?? '—'}
                       </p>
                     </div>
-                    <span className="text-xs text-ink-faint">{formatDateTime(log.created_at)}</span>
+                    <span className="text-xs text-cream-200/60">{formatDateTime(log.created_at)}</span>
                   </li>
                 ))}
               </ul>
@@ -192,21 +192,21 @@ function StatusCard({
   error?: string | null
 }) {
   return (
-    <div className="card p-5">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 shadow-card backdrop-blur">
       <div className="flex items-start justify-between">
-        <div className={cn('rounded-xl p-2.5', ok ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700')}>
+        <div className={cn('rounded-xl p-2.5', ok ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white')}>
           <Icon className="h-5 w-5" />
         </div>
         {ok ? (
-          <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
         ) : (
-          <XCircle className="h-5 w-5 text-red-500" />
+          <XCircle className="h-5 w-5 text-red-400" />
         )}
       </div>
-      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-ink-faint">{label}</p>
-      <p className="mt-0.5 text-sm font-bold text-brand-950">{ok ? 'Operational' : 'Issue detected'}</p>
-      <p className="mt-1 text-xs text-ink-soft">{detail}</p>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-cream-200/60">{label}</p>
+      <p className="mt-0.5 text-sm font-bold text-cream-50">{ok ? 'Operational' : 'Issue detected'}</p>
+      <p className="mt-1 text-xs text-cream-200/70">{detail}</p>
+      {error && <p className="mt-1 text-xs text-red-300">{error}</p>}
     </div>
   )
 }
@@ -214,12 +214,12 @@ function StatusCard({
 function ConfigRow({ label, value, safe }: { label: string; value: string; safe?: boolean }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="text-ink-soft">{label}</dt>
+      <dt className="text-cream-200/70">{label}</dt>
       <dd className="text-right">
         {safe ? (
           <Badge tone="green">Verified</Badge>
         ) : (
-          <code className="rounded bg-cream-100 px-2 py-0.5 text-xs text-brand-800">{value}</code>
+          <code className="rounded bg-white/10 px-2 py-0.5 text-xs text-gold-300">{value}</code>
         )}
       </dd>
     </div>
@@ -228,17 +228,17 @@ function ConfigRow({ label, value, safe }: { label: string; value: string; safe?
 
 type CountTone = 'brown' | 'gold' | 'green' | 'blue'
 const countTones: Record<CountTone, string> = {
-  brown: 'bg-gradient-to-br from-brand-100 to-cream-100',
-  gold: 'bg-gradient-to-br from-gold-100 to-cream-100',
-  green: 'bg-gradient-to-br from-emerald-100 to-cream-100',
-  blue: 'bg-gradient-to-br from-sky-100 to-cream-100',
+  brown: 'border-white/10 bg-gradient-to-br from-brand-800/80 to-brand-950/70',
+  gold: 'border-gold-400/20 bg-gradient-to-br from-gold-800/50 to-brand-950/70',
+  green: 'border-emerald-400/20 bg-gradient-to-br from-emerald-800/50 to-brand-950/70',
+  blue: 'border-sky-800/50 bg-gradient-to-br from-sky-900/50 to-brand-950/70',
 }
 
 function CountCell({ label, value, tone = 'brown' }: { label: string; value: number | null; tone?: CountTone }) {
   return (
-    <div className={`rounded-xl p-4 text-center ${countTones[tone]}`}>
-      <p className="text-2xl font-extrabold text-brand-950">{value ?? '—'}</p>
-      <p className="text-xs font-semibold text-ink-faint">{label}</p>
+    <div className={`rounded-xl border p-4 text-center ${countTones[tone]}`}>
+      <p className="text-2xl font-extrabold text-cream-50">{value ?? '—'}</p>
+      <p className="text-xs font-semibold text-cream-200/60">{label}</p>
     </div>
   )
 }

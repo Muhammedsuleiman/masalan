@@ -28,30 +28,30 @@ const toneIcon: Record<Tone, string> = {
 }
 
 const tonePanel: Record<Tone, string> = {
-  brown: 'bg-gradient-to-br from-brand-100 via-cream-100 to-cream-50 border-brand-200/50',
-  gold: 'bg-gradient-to-br from-gold-100 via-cream-100 to-cream-50 border-gold-200/60',
-  green: 'bg-gradient-to-br from-emerald-100 via-cream-100 to-cream-50 border-emerald-200/50',
-  red: 'bg-gradient-to-br from-red-100 via-cream-100 to-cream-50 border-red-200/40',
-  blue: 'bg-gradient-to-br from-sky-100 via-cream-100 to-cream-50 border-sky-200/50',
-  cream: 'bg-gradient-to-br from-cream-200 via-cream-100 to-cream-50 border-brand-200/50',
+  brown: 'bg-gradient-to-br from-brand-800/90 to-brand-950/80 border-white/10',
+  gold: 'bg-gradient-to-br from-gold-800/60 to-brand-950/80 border-gold-400/20',
+  green: 'bg-gradient-to-br from-emerald-800/60 to-brand-950/80 border-emerald-400/20',
+  red: 'bg-gradient-to-br from-red-900/50 to-brand-950/80 border-red-400/20',
+  blue: 'bg-gradient-to-br from-sky-800/60 to-brand-950/80 border-sky-400/20',
+  cream: 'bg-gradient-to-br from-brand-700/80 to-brand-950/80 border-cream-300/20',
 }
 
 const toneChip: Record<Tone, string> = {
-  brown: 'bg-brand-700 text-cream-100',
-  gold: 'bg-gold-500 text-brand-950',
-  green: 'bg-emerald-600 text-white',
-  red: 'bg-red-600 text-white',
-  blue: 'bg-sky-600 text-white',
-  cream: 'bg-brand-900 text-gold-400',
+  brown: 'bg-gold-500 text-brand-950',
+  gold: 'bg-gold-400 text-brand-950',
+  green: 'bg-emerald-500 text-white',
+  red: 'bg-red-500 text-white',
+  blue: 'bg-sky-500 text-white',
+  cream: 'bg-cream-200 text-brand-900',
 }
 
 const toneLabel: Record<Tone, string> = {
-  brown: 'text-brand-700',
-  gold: 'text-gold-700',
-  green: 'text-emerald-700',
-  red: 'text-red-600',
-  blue: 'text-sky-700',
-  cream: 'text-brand-800',
+  brown: 'text-gold-300',
+  gold: 'text-gold-300',
+  green: 'text-emerald-300',
+  red: 'text-red-300',
+  blue: 'text-sky-300',
+  cream: 'text-cream-200',
 }
 
 export function StatCard({ label, value, icon: Icon, tone = 'brown', sub, loading, variant = 'flat' }: StatCardProps) {
@@ -60,7 +60,7 @@ export function StatCard({ label, value, icon: Icon, tone = 'brown', sub, loadin
     <div
       className={cn(
         'rounded-2xl p-5 shadow-card border transition-shadow hover:shadow-lift',
-        colorful ? tonePanel[tone] : 'card p-5',
+        colorful ? cn(tonePanel[tone], 'backdrop-blur') : 'card p-5',
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -69,11 +69,13 @@ export function StatCard({ label, value, icon: Icon, tone = 'brown', sub, loadin
             {label}
           </p>
           {loading ? (
-            <div className="mt-2 h-7 w-24 animate-pulse rounded-md bg-cream-200" />
+            <div className="mt-2 h-7 w-24 animate-pulse rounded-md bg-white/15" />
           ) : (
-            <p className="mt-1 truncate text-2xl font-extrabold tracking-tight text-brand-950">{value}</p>
+            <p className={cn('mt-1 truncate text-2xl font-extrabold tracking-tight', colorful ? 'text-cream-50' : 'text-brand-950')}>
+              {value}
+            </p>
           )}
-          {sub && <p className="mt-1 text-xs text-ink-soft">{sub}</p>}
+          {sub && <p className={cn('mt-1 text-xs', colorful ? 'text-cream-200/60' : 'text-ink-soft')}>{sub}</p>}
         </div>
         <div className={cn('shrink-0 rounded-xl p-2.5', colorful ? toneChip[tone] : toneIcon[tone])}>
           <Icon className="h-5 w-5" />

@@ -90,13 +90,13 @@ export default function OwnerDashboardPage() {
 
   return (
     <div className="animate-fadeUp space-y-6">
-      <div className="rounded-2xl border border-brand-100/80 bg-gradient-to-r from-brand-50 via-cream-50 to-gold-50 p-5 shadow-card sm:p-6">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-card backdrop-blur sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-950 via-brand-700 to-gold-600 bg-clip-text text-transparent">
+            <h1 className="font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-gold-200 via-gold-300 to-gold-400 bg-clip-text text-transparent">
               Business Overview
             </h1>
-            <p className="mt-1 text-sm text-ink-soft">
+            <p className="mt-1 text-sm text-cream-200/80">
               {isAll
                 ? `Combined performance across ${businesses.map((b) => b.name).join(' and ') || 'all businesses'}.`
                 : names.get(filters.businessId) ?? 'Selected business'}
@@ -113,7 +113,7 @@ export default function OwnerDashboardPage() {
       )}
 
       {loading && !data ? (
-        <div className="flex items-center justify-center py-24 text-brand-600">
+        <div className="flex items-center justify-center py-24 text-gold-400">
           <Spinner className="h-6 w-6" />
         </div>
       ) : stats ? (
@@ -133,23 +133,23 @@ export default function OwnerDashboardPage() {
 
           {/* Low-stock alert */}
           {lowStock.length > 0 && (
-            <Card className="border-red-200 bg-gradient-to-br from-red-50 via-cream-50 to-cream-100">
+            <Card className="border-red-400/20 bg-gradient-to-br from-red-950/70 to-brand-950/80 [&_h3]:text-red-100 [&_p]:text-red-200/70">
               <CardHeader
                 title="Low-stock alert"
                 subtitle={`${lowStock.length} product${lowStock.length === 1 ? '' : 's'} at or below reorder level`}
-                action={<AlertTriangle className="h-5 w-5 text-red-500" />}
+                action={<AlertTriangle className="h-5 w-5 text-red-400" />}
               />
-              <ul className="divide-y divide-red-100">
+              <ul className="divide-y divide-white/10">
                 {lowStock.map((r) => (
                   <li key={r.product_id} className="flex items-center justify-between gap-3 py-2">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-ink">{r.name}</p>
-                      <p className="text-xs text-ink-soft">{names.get(r.business_id) ?? r.business_id} · {r.unit}</p>
+                      <p className="truncate text-sm font-semibold text-cream-50">{r.name}</p>
+                      <p className="text-xs text-cream-200/60">{names.get(r.business_id) ?? r.business_id} · {r.unit}</p>
                     </div>
                     <div className="text-right">
-                      <span className="font-bold text-red-600">{formatQuantity(r.available)}</span>
-                      <span className="text-xs text-ink-faint"> remaining</span>
-                      {r.reorder_level > 0 && <p className="text-[11px] text-ink-faint">reorder at {formatQuantity(r.reorder_level)}</p>}
+                      <span className="font-bold text-red-300">{formatQuantity(r.available)}</span>
+                      <span className="text-xs text-cream-200/60"> remaining</span>
+                      {r.reorder_level > 0 && <p className="text-[11px] text-cream-200/60">reorder at {formatQuantity(r.reorder_level)}</p>}
                     </div>
                   </li>
                 ))}
@@ -255,22 +255,31 @@ export default function OwnerDashboardPage() {
 
 type MiniTone = 'brown' | 'gold' | 'green' | 'red' | 'blue' | 'amber'
 const miniTones: Record<MiniTone, string> = {
-  brown: 'bg-gradient-to-br from-brand-100 to-cream-100 text-brand-900',
-  gold: 'bg-gradient-to-br from-gold-100 to-cream-100 text-gold-800',
-  green: 'bg-gradient-to-br from-emerald-100 to-cream-100 text-emerald-800',
-  red: 'bg-gradient-to-br from-red-100 to-cream-100 text-red-700',
-  blue: 'bg-gradient-to-br from-sky-100 to-cream-100 text-sky-800',
-  amber: 'bg-gradient-to-br from-amber-100 to-cream-100 text-amber-800',
+  brown: 'border-white/10 bg-gradient-to-br from-brand-800/80 to-brand-950/70',
+  gold: 'border-gold-400/20 bg-gradient-to-br from-gold-800/50 to-brand-950/70',
+  green: 'border-emerald-400/20 bg-gradient-to-br from-emerald-800/50 to-brand-950/70',
+  red: 'border-red-400/20 bg-gradient-to-br from-red-900/50 to-brand-950/70',
+  blue: 'border-sky-800/50 bg-gradient-to-br from-sky-900/50 to-brand-950/70',
+  amber: 'border-amber-400/20 bg-gradient-to-br from-amber-800/50 to-brand-950/70',
+}
+
+const miniLabels: Record<MiniTone, string> = {
+  brown: 'text-gold-300',
+  gold: 'text-gold-300',
+  green: 'text-emerald-300',
+  red: 'text-red-300',
+  blue: 'text-sky-300',
+  amber: 'text-amber-300',
 }
 
 function MiniMetric({ label, value, sub, tone = 'brown' }: { label: string; value?: string | number | null; sub?: string; tone?: MiniTone }) {
   return (
-    <div className={`rounded-xl p-3 ${miniTones[tone]}`}>
-      <p className={`text-[11px] font-semibold uppercase tracking-wide ${tone === 'red' ? 'text-red-600/80' : 'text-ink-faint'}`}>{label}</p>
-      <p className="mt-0.5 text-base font-extrabold text-brand-950">
+    <div className={`rounded-xl border p-3 ${miniTones[tone]}`}>
+      <p className={`text-[11px] font-semibold uppercase tracking-wide ${miniLabels[tone]}`}>{label}</p>
+      <p className={`mt-0.5 text-base font-extrabold ${tone === 'red' ? 'text-red-300' : 'text-cream-50'}`}>
         {value ?? '₦0.00'}
       </p>
-      {sub && <p className="text-[11px] text-ink-faint">{sub}</p>}
+      {sub && <p className="text-[11px] text-cream-200/60">{sub}</p>}
     </div>
   )
 }
