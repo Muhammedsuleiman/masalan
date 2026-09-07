@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Plus, Receipt, Search, Eye, Trash2, CheckCircle2 } from 'lucide-react'
+import { Plus, Receipt, Search, Eye, Trash2, CheckCircle2, Download } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { fetchSales, deleteSale } from '../services/financeService'
 import type { Sale } from '../types'
 import { useAuth } from '../contexts/AuthContext'
 import { formatNaira, formatDateTime } from '../lib/money'
+import { toCsv, downloadCsv, makeFilename } from '../lib/csv'
 import { getDateRange } from '../lib/dates'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
@@ -95,15 +96,37 @@ export default function SalesPage() {
     }
   }
 
+  const exportCsv = () => {
+    const csv = toCsv(
+      ['Date', 'Customer', 'Business', 'Total', 'Paid', 'Outstanding', 'Status', 'Recorded by'],
+      sales.map((s) => [
+        formatDateTime(s.sale_date),
+        s.customer?.name ?? '',
+        s.business?.name ?? '',
+        formatNaira(s.total_amount),
+        formatNaira(s.amount_paid),
+        formatNaira(s.amount_outstanding),
+        s.payment_status,
+        s.creator?.full_name ?? '',
+      ]),
+    )
+    downloadCsv(makeFilename('masalan-sales'), csv)
+  }
+
   return (
     <div className="animate-fadeUp space-y-6">
       <PageHeader
         title="Sales"
         subtitle="All recorded sales, with full payment status across your businesses."
         actions={
-          <Link to="/sales/new" className="btn-primary">
-            <Plus className="h-4 w-4" /> New sale
-          </Link>
+          <>
+            <button type="button" className="btn-outline" onClick={exportCsv} disabled={sales.length === 0}>
+              <Download className="h-4 w-4" /> Export CSV
+            </button>
+            <Link to="/sales/new" className="btn-primary">
+              <Plus className="h-4 w-4" /> New sale
+            </Link>
+          </>
         }
       />
 

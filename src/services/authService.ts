@@ -31,6 +31,15 @@ export function getFriendlyError(error: unknown): string {
   if (lower.includes('payment amount exceeds')) {
     return 'The payment amount is more than the outstanding balance for this sale.'
   }
+  if (lower.includes('invalid code') || lower.includes('mfa verification failed') || lower.includes('invalid totp')) {
+    return 'The authentication code is invalid or has expired. Please try again.'
+  }
+  if (lower.includes('too many enrolled')) {
+    return 'Too many authenticator devices are enrolled. Remove an existing one first.'
+  }
+  if (lower.includes('insufficient_aal') || lower.includes('insufficient')) {
+    return 'Verify with your authentication code before completing this action.'
+  }
   if (lower.includes('quantity must be greater than zero')) {
     return 'Quantity must be greater than zero.'
   }
@@ -175,6 +184,75 @@ export async function changeUserRole(userId: string, role: Role): Promise<{ erro
 
 export async function updateUserFullName(userId: string, fullName: string): Promise<{ error: string | null }> {
   const { error } = await supabase.from('profiles').update({ full_name: fullName }).eq('id', userId)
+  if (error) return { error: getFriendlyError(error) }
+  return { error: null }
+}
+
+// -----------------------------------------------------------------------------
+// MFA (TOTP) — two-factor authentication
+//
+// Enrollment permissions are enabled on the Supabase project (mfa_totp_enroll_enabled).
+// We use the AAL1 -> AAL2 upgrade flow: sign-in always issues an AAL1 session, then
+// the app checks for verified TOTP factors and forces a challenge to reach AAL2.
+// -----------------------------------------------------------------------------
+export interface MfaStatus {
+  /** ID of the user's verified TOTP factor, if any. */
+  totpFactorId: string | null
+  /** Total number of enrolled factors (any type). */
+  factorCount: number
+  /** 'aal1' | 'aal2' | null for the active session. */
+  aalLevel: string | null
+}
+
+/** True when the signed-in user has at least one verified TOTP factor. */
+export async function userHasVerifiedTotp(): Promise<boolean> {
+  const { data } = await supabase.auth.mfa.listFactors()
+  return (data?.totp?.length ?? 0) > 0
+}
+
+/** Current MFA status for the active session. */
+export async function getMfaStatus(): Promise<MfaStatus> {
+  const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  const { data: factors } = await supabase.auth.mfa.listFactors()
+  const totp = factors?.totp ?? []
+  return {
+    totpFactorId: totp.length > 0 ? totp[0].id : null,
+    factorCount: factors?.all?.length ?? 0,
+    aalLevel: aalData?.currentLevel ?? null,
+  }
+}
+
+/** Start TOTP enrollment: returns the QR code + otpauth URI for the authenticator app. */
+export async function enrollTotp(): Promise<{
+  factorId: string
+  qrCode: string
+  secret: string
+  uri: string
+  error: string | null
+}> {
+  const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' })
+  if (error || !data || data.type !== 'totp' || !data.totp) {
+    return { factorId: '', qrCode: '', secret: '', uri: '', error: getFriendlyError(error) }
+  }
+  return {
+    factorId: data.id,
+    qrCode: data.totp.qr_code ?? '',
+    secret: data.totp.secret ?? '',
+    uri: data.totp.uri ?? '',
+    error: null,
+  }
+}
+
+/** Verify a TOTP code for a factor (a single challenge-and-verify). */
+export async function verifyTotp(factorId: string, code: string): Promise<{ error: string | null }> {
+  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code: code.trim() })
+  if (error) return { error: getFriendlyError(error) }
+  return { error: null }
+}
+
+/** Unenroll (remove) an MFA factor. Requires an AAL2 session. */
+export async function unenrollTotp(factorId: string): Promise<{ error: string | null }> {
+  const { error } = await supabase.auth.mfa.unenroll({ factorId })
   if (error) return { error: getFriendlyError(error) }
   return { error: null }
 }

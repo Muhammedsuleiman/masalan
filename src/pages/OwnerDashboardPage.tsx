@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   ArrowUpRight,
   Clock,
+  AlertTriangle,
 } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { usePeriodData } from '../hooks/usePeriodData'
@@ -22,6 +23,7 @@ import {
   fetchLifetimeNetPosition,
   type PeriodData,
 } from '../services/reportService'
+import { fetchStockSummary } from '../services/dataService'
 import { StatCard } from '../components/ui/StatCard'
 import { Card, CardHeader } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -32,6 +34,7 @@ import { RevenueTrendChart } from '../components/charts/RevenueTrendChart'
 import { PaymentMethodChart } from '../components/charts/PaymentMethodChart'
 import { BusinessComparisonChart } from '../components/charts/BusinessComparisonChart'
 import { formatNaira, formatQuantity, formatDateTime } from '../lib/money'
+import type { InventoryStock } from '../types'
 
 function businessTotals(data: PeriodData | null, businessId: string, outstanding: number) {
   if (!data) return null
@@ -49,10 +52,12 @@ export default function OwnerDashboardPage() {
   const { data, loading, error } = usePeriodData(filters)
   const [outstandingByBiz, setOutstandingByBiz] = useState<Map<string, { total: number; count: number }>>(new Map())
   const [lifetimeNet, setLifetimeNet] = useState<number | null>(null)
+  const [lowStock, setLowStock] = useState<InventoryStock[]>([])
 
   useEffect(() => {
     void fetchOutstandingByBusiness().then(setOutstandingByBiz)
     void fetchLifetimeNetPosition().then(setLifetimeNet).catch(() => setLifetimeNet(null))
+    void fetchStockSummary().then((rows) => setLowStock(rows.filter((r) => r.reorder_level > 0 && r.available <= r.reorder_level))).catch(() => setLowStock([]))
   }, [])
 
   const stats = useMemo(() => (data ? computeStats(data) : null), [data])
@@ -121,6 +126,32 @@ export default function OwnerDashboardPage() {
             <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Layers} tone="gold" />
             <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" sub={`${stats.creditSalesCount} not fully paid`} />
           </div>
+
+          {/* Low-stock alert */}
+          {lowStock.length > 0 && (
+            <Card className="border-red-100 bg-red-50/40">
+              <CardHeader
+                title="Low-stock alert"
+                subtitle={`${lowStock.length} product${lowStock.length === 1 ? '' : 's'} at or below reorder level`}
+                action={<AlertTriangle className="h-5 w-5 text-red-500" />}
+              />
+              <ul className="divide-y divide-red-100">
+                {lowStock.map((r) => (
+                  <li key={r.product_id} className="flex items-center justify-between gap-3 py-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-ink">{r.name}</p>
+                      <p className="text-xs text-ink-soft">{names.get(r.business_id) ?? r.business_id} · {r.unit}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-bold text-red-600">{formatQuantity(r.available)}</span>
+                      <span className="text-xs text-ink-faint"> remaining</span>
+                      {r.reorder_level > 0 && <p className="text-[11px] text-ink-faint">reorder at {formatQuantity(r.reorder_level)}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
 
           {/* Business breakdown */}
           {isAll && businesses.length > 0 && (

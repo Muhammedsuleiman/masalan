@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase'
 import { getFriendlyError } from './authService'
-import type { Business, Customer, Product, Staff, ExpenseCategory } from '../types'
+import { toNumber } from '../lib/money'
+import type { Business, Customer, InventoryStock, Product, Staff, ExpenseCategory } from '../types'
 
 // -----------------------------------------------------------------------------
 // Businesses
@@ -48,8 +49,28 @@ export async function fetchProducts(includeInactive = false): Promise<Product[]>
     ...row,
     price: Number(row.price),
     cost_price: row.cost_price !== null && row.cost_price !== undefined ? Number(row.cost_price) : null,
+    opening_stock: toNumber(row.opening_stock ?? 0),
+    reorder_level: toNumber(row.reorder_level ?? 0),
     business_name: (row as unknown as { business: { name: string } }).business?.name,
   })) as Product[]
+}
+
+export async function fetchStockSummary(businessId?: string): Promise<InventoryStock[]> {
+  let query = supabase
+    .from('inventory_stock')
+    .select('*')
+    .order('name')
+  if (businessId) query = query.eq('business_id', businessId)
+  const { data, error } = await query
+  if (error) throw new Error(getFriendlyError(error))
+  return (data ?? []).map((row) => ({
+    ...row,
+    price: Number(row.price),
+    opening_stock: toNumber(row.opening_stock),
+    reorder_level: toNumber(row.reorder_level),
+    sold_quantity: toNumber(row.sold_quantity),
+    available: toNumber(row.available),
+  })) as InventoryStock[]
 }
 
 export async function fetchProductsByBusiness(businessId: string): Promise<Product[]> {
@@ -60,7 +81,13 @@ export async function fetchProductsByBusiness(businessId: string): Promise<Produ
     .eq('active', true)
     .order('price')
   if (error) throw new Error(getFriendlyError(error))
-  return (data ?? []).map((row) => ({ ...row, price: Number(row.price), cost_price: row.cost_price !== null && row.cost_price !== undefined ? Number(row.cost_price) : null })) as Product[]
+  return (data ?? []).map((row) => ({
+    ...row,
+    price: Number(row.price),
+    cost_price: row.cost_price !== null && row.cost_price !== undefined ? Number(row.cost_price) : null,
+    opening_stock: toNumber(row.opening_stock ?? 0),
+    reorder_level: toNumber(row.reorder_level ?? 0),
+  })) as Product[]
 }
 
 export async function createProduct(patch: {
@@ -71,6 +98,8 @@ export async function createProduct(patch: {
   category?: string | null
   cost_price?: number | null
   description?: string | null
+  opening_stock?: number
+  reorder_level?: number
 }): Promise<{ id: string | null; error: string | null }> {
   const { data, error } = await supabase.from('products').insert(patch).select('id').single()
   if (error) return { id: null, error: getFriendlyError(error) }
@@ -80,7 +109,17 @@ export async function createProduct(patch: {
 
 export async function updateProduct(
   id: string,
-  patch: { name?: string; price?: number; unit?: string; active?: boolean; category?: string | null; cost_price?: number | null; description?: string | null },
+  patch: {
+    name?: string
+    price?: number
+    unit?: string
+    active?: boolean
+    category?: string | null
+    cost_price?: number | null
+    description?: string | null
+    opening_stock?: number
+    reorder_level?: number
+  },
 ): Promise<{ error: string | null }> {
   const { error } = await supabase.from('products').update(patch).eq('id', id)
   if (error) return { error: getFriendlyError(error) }

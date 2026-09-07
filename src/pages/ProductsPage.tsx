@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Package, Search, Pencil, CheckCircle2, Info, Archive, ArrowUpCircle } from 'lucide-react'
+import { Package, Search, Pencil, CheckCircle2, Info, Archive, ArrowUpCircle, AlertTriangle } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
-import { fetchProducts, createProduct, updateProduct } from '../services/dataService'
-import type { Product } from '../types'
+import { fetchProducts, createProduct, updateProduct, fetchStockSummary } from '../services/dataService'
+import type { Product, InventoryStock } from '../types'
 import { useAuth } from '../contexts/AuthContext'
-import { formatNaira } from '../lib/money'
+import { formatNaira, formatQuantity } from '../lib/money'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -21,6 +21,7 @@ export default function ProductsPage() {
   const { businesses } = useBusinesses()
 
   const [products, setProducts] = useState<Product[]>([])
+  const [stockMap, setStockMap] = useState<Record<string, InventoryStock>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -37,14 +38,17 @@ export default function ProductsPage() {
   const [formCategory, setFormCategory] = useState('')
   const [formCostPrice, setFormCostPrice] = useState('')
   const [formDescription, setFormDescription] = useState('')
+  const [formOpeningStock, setFormOpeningStock] = useState('')
+  const [formReorderLevel, setFormReorderLevel] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const load = async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchProducts(true)
+      const [data, stock] = await Promise.all([fetchProducts(true), fetchStockSummary()])
       setProducts(data)
+      setStockMap(Object.fromEntries(stock.map((s) => [s.product_id, s])))
     } catch (e) {
       setError((e as Error).message)
     } finally {
@@ -76,6 +80,8 @@ export default function ProductsPage() {
     setFormCategory('')
     setFormCostPrice('')
     setFormDescription('')
+    setFormOpeningStock('')
+    setFormReorderLevel('')
     setModalOpen(true)
   }
 
@@ -89,6 +95,8 @@ export default function ProductsPage() {
     setFormCategory(p.category ?? '')
     setFormCostPrice(p.cost_price !== null && p.cost_price !== undefined ? String(p.cost_price) : '')
     setFormDescription(p.description ?? '')
+    setFormOpeningStock(String(p.opening_stock))
+    setFormReorderLevel(String(p.reorder_level))
     setModalOpen(true)
   }
 
@@ -105,6 +113,8 @@ export default function ProductsPage() {
   const submit = async () => {
     const price = parseAmount(formPrice)
     const costPrice = formCostPrice.trim() ? parseAmount(formCostPrice) : null
+    const openingStock = formOpeningStock.trim() ? parseAmount(formOpeningStock) : null
+    const reorderLevel = formReorderLevel.trim() ? parseAmount(formReorderLevel) : null
     if (!formBusiness) {
       setError('Select a business.')
       return
@@ -129,6 +139,8 @@ export default function ProductsPage() {
       category: formCategory.trim() || null,
       cost_price: costPrice,
       description: formDescription.trim() || null,
+      opening_stock: openingStock ?? 0,
+      reorder_level: reorderLevel ?? 0,
     }
     let result: { id: string | null; error: string | null }
     if (editing) {
@@ -200,56 +212,69 @@ export default function ProductsPage() {
           <EmptyState icon={Package} title="No products found" description="Products are managed by the owner. Add your first product to start selling." />
         ) : (
           <div className="table-wrap">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Business</th>
-                  <th>Category</th>
-                  <th className="!text-right">Price</th>
-                  <th className="!text-right">Cost</th>
-                  <th>Unit</th>
-                  <th>Status</th>
-                  {isOwner && <th className="!text-right">Actions</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {visible.map((p) => (
-                  <tr key={p.id}>
-                    <td className="font-semibold text-ink">
-                      {p.name}
-                      {p.description && <p className="max-w-[200px] truncate text-xs text-ink-faint">{p.description}</p>}
-                    </td>
-                    <td className="text-ink-soft">{p.business_name ?? '—'}</td>
-                    <td className="text-ink-soft">{p.category ?? '—'}</td>
-                    <td className="!text-right font-bold text-brand-950">{formatNaira(p.price)}</td>
-                    <td className="!text-right text-ink-soft">{p.cost_price !== null ? formatNaira(p.cost_price) : '—'}</td>
-                    <td className="text-ink-soft">{p.unit}</td>
-                    <td>
-                      <Badge tone={p.active ? 'green' : 'gray'}>{p.active ? 'Available' : 'Unavailable'}</Badge>
-                    </td>
-                    {isOwner && (
-                      <td>
-                        <div className="flex items-center justify-end gap-1">
-                          <button type="button" onClick={() => openEdit(p)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="Edit product">
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => void toggleActive(p)}
-                            className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-brand-50"
-                            aria-label={p.active ? 'Mark unavailable' : 'Restore product'}
-                            title={p.active ? 'Mark unavailable' : 'Restore product'}
-                          >
-                            {p.active ? <Archive className="h-4 w-4" /> : <ArrowUpCircle className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </td>
-                    )}
+<table className="table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Business</th>
+                    <th>Category</th>
+                    <th className="!text-right">Price</th>
+                    <th className="!text-right">Cost</th>
+                    <th>Unit</th>
+                    <th className="!text-right">In stock</th>
+                    <th className="!text-right">Reorder at</th>
+                    <th>Status</th>
+                    {isOwner && <th className="!text-right">Actions</th>}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {visible.map((p) => {
+                    const stock = stockMap[p.id]
+                    const available = stock ? stock.available : p.opening_stock
+                    const low = stock ? stock.reorder_level > 0 && stock.available <= stock.reorder_level : false
+                    return (
+                    <tr key={p.id}>
+                      <td className="font-semibold text-ink">
+                        {p.name}
+                        {p.description && <p className="max-w-[200px] truncate text-xs text-ink-faint">{p.description}</p>}
+                      </td>
+                      <td className="text-ink-soft">{p.business_name ?? '—'}</td>
+                      <td className="text-ink-soft">{p.category ?? '—'}</td>
+                      <td className="!text-right font-bold text-brand-950">{formatNaira(p.price)}</td>
+                      <td className="!text-right text-ink-soft">{p.cost_price !== null ? formatNaira(p.cost_price) : '—'}</td>
+                      <td className="text-ink-soft">{p.unit}</td>
+                      <td className="!text-right">
+                        <span className={`font-semibold ${low ? 'text-red-600' : available > 0 ? 'text-emerald-700' : 'text-ink-faint'}`}>
+                          {formatQuantity(available)}
+                        </span>
+                        {low && <AlertTriangle className="ml-1 inline h-3.5 w-3.5 text-red-500" aria-label="Low stock" />}
+                      </td>
+                      <td className="!text-right text-ink-soft">{p.reorder_level > 0 ? formatQuantity(p.reorder_level) : '—'}</td>
+                      <td>
+                        <Badge tone={p.active ? 'green' : 'gray'}>{p.active ? 'Available' : 'Unavailable'}</Badge>
+                      </td>
+                      {isOwner && (
+                        <td>
+                          <div className="flex items-center justify-end gap-1">
+                            <button type="button" onClick={() => openEdit(p)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="Edit product">
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void toggleActive(p)}
+                              className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-brand-50"
+                              aria-label={p.active ? 'Mark unavailable' : 'Restore product'}
+                              title={p.active ? 'Mark unavailable' : 'Restore product'}
+                            >
+                              {p.active ? <Archive className="h-4 w-4" /> : <ArrowUpCircle className="h-4 w-4" />}
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  )})}
+                </tbody>
+              </table>
           </div>
         )}
       </Card>
@@ -291,6 +316,14 @@ export default function ProductsPage() {
             <div>
               <label className="label">Category</label>
               <input className="input" value={formCategory} onChange={(e) => setFormCategory(e.target.value)} placeholder="e.g. Bakery" />
+            </div>
+            <div>
+              <label className="label">Opening stock</label>
+              <input type="number" min="0" step="0.01" className="input" value={formOpeningStock} onChange={(e) => setFormOpeningStock(e.target.value)} placeholder="0" />
+            </div>
+            <div>
+              <label className="label">Reorder at (low-stock alert)</label>
+              <input type="number" min="0" step="0.01" className="input" value={formReorderLevel} onChange={(e) => setFormReorderLevel(e.target.value)} placeholder="e.g. 10" />
             </div>
             <div className="sm:col-span-2">
               <label className="label">Description</label>

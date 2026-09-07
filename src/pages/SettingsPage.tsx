@@ -13,6 +13,7 @@ import { Spinner } from '../components/ui/Spinner'
 import { Badge } from '../components/ui/Badge'
 import { Modal } from '../components/ui/Modal'
 import { Button } from '../components/ui/Button'
+import { MfaSection } from '../components/settings/MfaSection'
 import { formatDateTime } from '../lib/money'
 
 export default function SettingsPage() {
@@ -236,6 +237,8 @@ function OwnerSettings() {
         </Card>
       </div>
 
+      <MfaSection />
+
       <Modal
         open={createOpen || Boolean(editBusiness)}
         onClose={() => { setCreateOpen(false); setEditBusiness(null); }}
@@ -299,6 +302,8 @@ function ManagerSettings() {
           Role: <span className="font-semibold text-brand-800">Manager</span> · {profile?.email}
         </p>
       </Card>
+
+      <MfaSection />
     </div>
   )
 }
@@ -336,6 +341,8 @@ function DeveloperSettings() {
           </div>
         </dl>
       </Card>
+
+      <MfaSection />
     </div>
   )
 }

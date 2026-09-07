@@ -41,9 +41,10 @@ function FullScreenLoader() {
 }
 
 function RequireAuth() {
-  const { session, loading } = useAuth()
+  const { session, loading, mfaRequired } = useAuth()
   if (loading) return <FullScreenLoader />
   if (!session) return <Navigate to="/login" replace />
+  if (mfaRequired) return <Navigate to="/login" replace />
   return <Outlet />
 }
 

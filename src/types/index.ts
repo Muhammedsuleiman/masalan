@@ -30,7 +30,22 @@ export interface Product {
   active: boolean
   created_at: string
   updated_at: string
+  opening_stock: number
+  reorder_level: number
   business_name?: string
+}
+
+export interface InventoryStock {
+  product_id: string
+  business_id: string
+  name: string
+  unit: string
+  price: number
+  active: boolean
+  opening_stock: number
+  reorder_level: number
+  sold_quantity: number
+  available: number
 }
 
 export type CustomerType = 'individual' | 'business'

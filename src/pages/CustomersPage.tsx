@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Users, Search, Pencil, Trash2, Eye, CheckCircle2 } from 'lucide-react'
+import { Plus, Users, Search, Pencil, Trash2, Eye, CheckCircle2, Download } from 'lucide-react'
 import { fetchCustomers, createCustomer, updateCustomer, deleteCustomer } from '../services/dataService'
 import { fetchSales, fetchPayments } from '../services/financeService'
 import type { Customer, Payment, Sale } from '../types'
 import { useAuth } from '../contexts/AuthContext'
 import { formatNaira, formatDateTime } from '../lib/money'
+import { toCsv, downloadCsv, makeFilename } from '../lib/csv'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -142,15 +143,37 @@ export default function CustomersPage() {
 
   const totalOutstanding = viewSales.reduce((acc, s) => acc + s.amount_outstanding, 0)
 
+  const exportCsv = () => {
+    const csv = toCsv(
+      ['Name', 'Type', 'Business name', 'Phone', 'Email', 'Address', 'Notes', 'Added'],
+      customers.map((c) => [
+        c.name,
+        c.customer_type,
+        c.business_name ?? '',
+        c.phone ?? '',
+        c.email ?? '',
+        c.address ?? '',
+        c.notes ?? '',
+        formatDateTime(c.created_at),
+      ]),
+    )
+    downloadCsv(makeFilename('masalan-customers'), csv)
+  }
+
   return (
     <div className="animate-fadeUp space-y-6">
       <PageHeader
         title="Customers"
         subtitle="Individuals and businesses. A business name is optional for individual customers."
         actions={
-          <Button onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Add customer
-          </Button>
+          <>
+            <Button variant="outline" onClick={exportCsv} disabled={customers.length === 0}>
+              <Download className="h-4 w-4" /> Export CSV
+            </Button>
+            <Button onClick={openCreate}>
+              <Plus className="h-4 w-4" /> Add customer
+            </Button>
+          </>
         }
       />
 

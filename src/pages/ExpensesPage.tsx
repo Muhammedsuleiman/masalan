@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, TrendingDown, Search, Pencil, Trash2, CheckCircle2 } from 'lucide-react'
+import { Plus, TrendingDown, Search, Pencil, Trash2, CheckCircle2, Download } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { fetchExpenses, recordExpense, updateExpense, deleteExpense } from '../services/financeService'
 import { fetchExpenseCategories } from '../services/dataService'
@@ -8,6 +8,7 @@ import type { Expense, ExpenseCategory, PaymentMethod } from '../types'
 import { useAuth } from '../contexts/AuthContext'
 import { formatNaira, formatDateTime, parseAmount } from '../lib/money'
 import { todayInputValue } from '../lib/dates'
+import { toCsv, downloadCsv, makeFilename } from '../lib/csv'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -86,6 +87,24 @@ export default function ExpensesPage() {
   const total = useMemo(() => activeExpenses.reduce((acc, e) => acc + e.amount, 0), [activeExpenses])
   const pageCount = Math.max(1, Math.ceil(expenses.length / PAGE_SIZE))
   const visible = useMemo(() => expenses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [expenses, page])
+
+  const exportCsv = () => {
+    const csv = toCsv(
+      ['Date', 'Business', 'Category', 'Description', 'Amount', 'Method', 'Status', 'Notes', 'Recorded by'],
+      expenses.map((e) => [
+        formatDateTime(e.expense_date),
+        e.business?.name ?? '',
+        e.category,
+        e.description,
+        formatNaira(e.amount),
+        e.payment_method === 'cash' ? 'Cash' : e.payment_method === 'bank_transfer' ? 'Bank transfer' : '',
+        e.status,
+        e.notes ?? '',
+        e.recorder?.full_name ?? '',
+      ]),
+    )
+    downloadCsv(makeFilename('masalan-expenses'), csv)
+  }
 
   const openCreate = () => {
     setEditing(null)
@@ -191,9 +210,14 @@ export default function ExpensesPage() {
         title="Expenses"
         subtitle="Outgoing business money / debits. Amounts must always be greater than zero."
         actions={
-          <Button onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Record expense
-          </Button>
+          <>
+            <Button variant="outline" onClick={exportCsv} disabled={activeExpenses.length === 0}>
+              <Download className="h-4 w-4" /> Export CSV
+            </Button>
+            <Button onClick={openCreate}>
+              <Plus className="h-4 w-4" /> Record expense
+            </Button>
+          </>
         }
       />
 

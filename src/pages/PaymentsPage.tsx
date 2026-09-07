@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Wallet, Search, CheckCircle2 } from 'lucide-react'
+import { Plus, Wallet, Search, CheckCircle2, Download } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { fetchPayments, recordPayment, fetchCreditSales } from '../services/financeService'
 import type { Payment, PaymentMethod, Sale } from '../types'
 import { formatNaira, formatDateTime, parseAmount } from '../lib/money'
 import { todayInputValue } from '../lib/dates'
+import { toCsv, downloadCsv, makeFilename } from '../lib/csv'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -80,6 +81,22 @@ export default function PaymentsPage() {
   const pageCount = Math.max(1, Math.ceil(payments.length / PAGE_SIZE))
   const visible = useMemo(() => payments.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [payments, page])
 
+  const exportCsv = () => {
+    const csv = toCsv(
+      ['Date', 'Customer', 'Business', 'Amount', 'Method', 'Recorded by', 'Notes'],
+      payments.map((p) => [
+        formatDateTime(p.payment_date),
+        p.sale?.customer?.name ?? '',
+        p.sale?.business?.name ?? '',
+        formatNaira(p.amount),
+        p.payment_method === 'cash' ? 'Cash' : 'Bank transfer',
+        p.recorder?.full_name ?? '',
+        p.notes ?? '',
+      ]),
+    )
+    downloadCsv(makeFilename('masalan-payments'), csv)
+  }
+
   const openModal = () => {
     setError(null)
     setAmount('')
@@ -132,9 +149,14 @@ export default function PaymentsPage() {
         title="Payments"
         subtitle="Payment records — cash and bank transfers. Payments are only recorded, never processed."
         actions={
-          <Button variant="gold" onClick={openModal}>
-            <Plus className="h-4 w-4" /> Record payment
-          </Button>
+          <>
+            <Button variant="outline" onClick={exportCsv} disabled={payments.length === 0}>
+              <Download className="h-4 w-4" /> Export CSV
+            </Button>
+            <Button variant="gold" onClick={openModal}>
+              <Plus className="h-4 w-4" /> Record payment
+            </Button>
+          </>
         }
       />
 
