@@ -19,18 +19,33 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     let active = true
 
-    // detectSessionInUrl processes the #access_token / type=recovery fragment.
-    // Give it a tick to establish a session before we check.
-    supabase.auth.getSession().then(({ data }) => {
+    // Primary signal: the recovery flow fires PASSWORD_RECOVERY (or SIGNED_IN)
+    // once Supabase finishes parsing the URL hash and establishing the session.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (!active) return
-      const recovering =
-        Boolean(data.session) && window.location.hash?.toLowerCase().includes('type=recovery')
-      setHasRecoverySession(recovering)
-      setChecking(false)
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+        setHasRecoverySession(true)
+        setChecking(false)
+      }
     })
+
+    // Fallback: after the async hash exchange settles, confirm the URL really is a
+    // recovery link before accepting it (avoids accepting a stale pre-existing session).
+    const timeout = setTimeout(async () => {
+      if (!active) return
+      const isRecoveryHash = (window.location.hash || '').toLowerCase().includes('type=recovery')
+      if (isRecoveryHash) {
+        const { data } = await supabase.auth.getSession()
+        if (!active) return
+        setHasRecoverySession(Boolean(data.session))
+      }
+      setChecking(false)
+    }, 1500)
 
     return () => {
       active = false
+      subscription.unsubscribe()
+      clearTimeout(timeout)
     }
   }, [])
 
