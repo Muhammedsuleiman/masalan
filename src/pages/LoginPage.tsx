@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Lock, Mail, Loader2, Landmark } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { Alert } from '../components/ui/Alert'
@@ -142,6 +142,12 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Link to="/forgot-password" className="text-sm font-semibold text-brand-700 hover:text-brand-900">
+                Forgot password?
+              </Link>
             </div>
 
             <button type="submit" disabled={submitting} className="btn-gold w-full !py-3">

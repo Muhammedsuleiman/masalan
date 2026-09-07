@@ -50,6 +50,19 @@ export async function signOut(): Promise<void> {
   await supabase.auth.signOut()
 }
 
+export async function sendPasswordResetEmail(email: string): Promise<{ error: string | null }> {
+  const redirectTo = `${window.location.origin}/reset-password`
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+  if (error) return { error: getFriendlyError(error) }
+  return { error: null }
+}
+
+export async function updatePassword(newPassword: string): Promise<{ error: string | null }> {
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
+  if (error) return { error: getFriendlyError(error) }
+  return { error: null }
+}
+
 export async function getCurrentUserProfile(): Promise<{ profile: Profile | null; error: string | null }> {
   const { data: sessionData } = await supabase.auth.getSession()
   const userId = sessionData.session?.user.id

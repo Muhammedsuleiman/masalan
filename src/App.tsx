@@ -5,6 +5,8 @@ import { AppLayout } from './components/layout/AppLayout'
 import { Spinner } from './components/ui/Spinner'
 import type { Role } from './types'
 import LoginPage from './pages/LoginPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import DashboardPage from './pages/DashboardPage'
 import SalesPage from './pages/SalesPage'
 import NewSalePage from './pages/NewSalePage'
@@ -56,6 +58,8 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           <Route element={<RequireAuth />}>
             <Route element={<AppLayout />}>
