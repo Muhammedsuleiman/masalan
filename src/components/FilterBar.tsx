@@ -11,7 +11,7 @@ export interface FilterState {
 }
 
 export const DEFAULT_FILTERS: FilterState = {
-  period: 'month',
+  period: 'today',
   customFrom: '',
   customTo: '',
   businessId: '',
