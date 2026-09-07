@@ -59,8 +59,7 @@ export default function LoginPage() {
               Run both businesses from <span className="text-gold-400">one place</span>.
             </h1>
             <p className="mt-4 text-cream-200/80">
-              Sales, payments, credit, expenses and reports for Masalan Bakery Limited and Masalan
-              Water Factory — managed together, tracked separately.
+              Sales, payments, credit, expenses and reports for all of Masalan's businesses — managed together, tracked separately.
             </p>
           </div>
         </div>

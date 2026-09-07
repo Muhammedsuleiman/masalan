@@ -22,12 +22,12 @@ import { Card, CardHeader } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
 import { Spinner } from '../components/ui/Spinner'
 import { EmptyState } from '../components/ui/EmptyState'
-import { PaymentStatusBadge } from '../components/ui/Badge'
+import { Badge } from '../components/ui/Badge'
 import { formatNaira, formatDateTime } from '../lib/money'
 import { useEffect } from 'react'
 
 const QUICK_ACTIONS = [
-  { label: 'New sale', desc: 'Record a bakery or water sale', icon: ShoppingBag, to: '/sales/new', tone: 'bg-brand-100 text-brand-800' },
+  { label: 'New sale', desc: 'Record a sale', icon: ShoppingBag, to: '/sales/new', tone: 'bg-brand-100 text-brand-800' },
   { label: 'Record payment', desc: 'Payment against a sale', icon: Wallet, to: '/payments?quick=1', tone: 'bg-gold-100 text-gold-700' },
   { label: 'Add customer', desc: 'Individual or business', icon: UserPlus, to: '/customers?quick=1', tone: 'bg-emerald-100 text-emerald-700' },
   { label: 'Record expense', desc: 'Outgoing business money', icon: TrendingDown, to: '/expenses?quick=1', tone: 'bg-sky-100 text-sky-700' },
@@ -136,7 +136,7 @@ export default function ManagerDashboardPage() {
                           {log.user?.full_name || log.user?.email || 'User'} · {formatDateTime(log.created_at)}
                         </p>
                       </div>
-                      <PaymentStatusBadge status="paid" />
+                      <Badge tone={humanizeTone(log.action)}>{log.action.split('.')[0]}</Badge>
                     </li>
                   ))}
                 </ul>
@@ -181,8 +181,19 @@ function humanizeAction(action: string): string {
     'business.updated': 'Business updated',
     'user.role_changed': 'User role changed',
     'user.created': 'User created',
+    'expense_category.created': 'Expense category added',
+    'expense_category.updated': 'Expense category updated',
   }
   return map[action] ?? action.replace(/\./g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function humanizeTone(action: string): 'green' | 'gold' | 'red' | 'gray' | 'blue' {
+  if (action.startsWith('sale.') || action.startsWith('payment.')) return 'green'
+  if (action.startsWith('expense.')) return 'red'
+  if (action.startsWith('customer.') || action.startsWith('product.') || action.startsWith('business.')) return 'gold'
+  if (action.startsWith('expense_category.')) return 'gold'
+  if (action.startsWith('user.') || action.startsWith('staff.')) return 'blue'
+  return 'gray'
 }
 
 export { humanizeAction }

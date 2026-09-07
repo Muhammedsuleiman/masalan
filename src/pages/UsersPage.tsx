@@ -130,7 +130,7 @@ export default function UsersPage() {
     <div className="animate-fadeUp space-y-6">
       <PageHeader
         title="Users"
-        subtitle="Authorize manager and developer accounts. The Owner (Mr. Suleman) manages all roles."
+        subtitle="Authorize manager and developer accounts. Only the Owner manages all roles."
         actions={
           <Button onClick={openCreate}>
             <UserPlus className="h-4 w-4" /> Create user

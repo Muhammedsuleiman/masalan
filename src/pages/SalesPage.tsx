@@ -99,7 +99,7 @@ export default function SalesPage() {
     <div className="animate-fadeUp space-y-6">
       <PageHeader
         title="Sales"
-        subtitle="All recorded sales across both businesses."
+        subtitle="All recorded sales, with full payment status across your businesses."
         actions={
           <Link to="/sales/new" className="btn-primary">
             <Plus className="h-4 w-4" /> New sale

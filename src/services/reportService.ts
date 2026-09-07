@@ -98,7 +98,12 @@ async function fetchPaymentsForPeriod(from: string, to: string, businessId: stri
 }
 
 async function fetchExpensesForPeriod(from: string, to: string, businessId: string | null): Promise<Expense[]> {
-  let query = supabase.from('expenses').select('*').gte('expense_date', from).lte('expense_date', to)
+  let query = supabase
+    .from('expenses')
+    .select('*')
+    .eq('status', 'active')
+    .gte('expense_date', from)
+    .lte('expense_date', to)
   if (businessId) query = query.eq('business_id', businessId)
   const { data, error } = await query
   if (error) throw new Error(getFriendlyError(error))
@@ -211,7 +216,11 @@ export interface DayPoint {
 
 export function buildDaySeries(sales: Sale[], payments: Payment[], expenses: Expense[]): DayPoint[] {
   const map = new Map<string, DayPoint>()
-  const key = (d: string) => new Date(d).toISOString().slice(0, 10)
+  const key = (d: string) => {
+    const dt = new Date(d)
+    if (Number.isNaN(dt.getTime())) return 'unknown'
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+  }
 
   for (const s of sales) {
     const k = key(s.sale_date)

@@ -32,26 +32,37 @@ export function getDateRange(period: DatePeriod, customFrom?: string, customTo?:
   switch (period) {
     case 'today': {
       const from = startOfDay(now)
-      return { from: from.toISOString(), to: now.toISOString(), label: 'Today' }
+      // End of day (23:59:59.999 local) so morning sales are included
+      const to = new Date(from)
+      to.setHours(23, 59, 59, 999)
+      return { from: from.toISOString(), to: to.toISOString(), label: 'Today' }
     }
     case 'yesterday': {
       const day = new Date(now)
       day.setDate(day.getDate() - 1)
       const from = startOfDay(day)
-      const to = startOfDay(now)
+      const to = new Date(from)
+      to.setHours(23, 59, 59, 999)
       return { from: from.toISOString(), to: to.toISOString(), label: 'Yesterday' }
     }
     case 'week': {
       const from = startOfWeek(now)
-      return { from: from.toISOString(), to: now.toISOString(), label: 'This week' }
+      const to = new Date(from)
+      to.setDate(to.getDate() + 6)
+      to.setHours(23, 59, 59, 999)
+      return { from: from.toISOString(), to: to.toISOString(), label: 'This week' }
     }
     case 'month': {
       const from = startOfMonth(now)
-      return { from: from.toISOString(), to: now.toISOString(), label: 'This month' }
+      const to = new Date(from)
+      to.setMonth(to.getMonth() + 1)
+      to.setDate(0)
+      to.setHours(23, 59, 59, 999)
+      return { from: from.toISOString(), to: to.toISOString(), label: 'This month' }
     }
     case 'custom': {
       const fromDate = customFrom ? new Date(`${customFrom}T00:00:00`) : startOfWeek(now)
-      const toDate = customTo ? new Date(`${customTo}T23:59:59`) : now
+      const toDate = customTo ? new Date(`${customTo}T23:59:59.999`) : now
       if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) {
         return { from: startOfWeek(now).toISOString(), to: now.toISOString(), label: 'Custom range' }
       }

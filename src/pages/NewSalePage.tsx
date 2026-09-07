@@ -7,8 +7,6 @@ import {
   CheckCircle2,
   Search,
   UserPlus,
-  Wheat,
-  GlassWater,
 } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { fetchProductsByBusiness, fetchCustomers, createCustomer, fetchStaff } from '../services/dataService'
@@ -156,8 +154,12 @@ export default function NewSalePage() {
       setError('Add at least one product with a quantity greater than zero.')
       return
     }
-    if (paid < 0 || (amountPaid.trim() && Number.isNaN(paid))) {
-      setError('Amount paid is invalid.')
+    if (paid < 0) {
+      setError('Amount paid cannot be negative.')
+      return
+    }
+    if (paid > total && total > 0) {
+      setError('Amount paid cannot exceed the sale total.')
       return
     }
     if (paid > 0 && !paymentMethod) {
@@ -191,7 +193,7 @@ export default function NewSalePage() {
     <div className="mx-auto max-w-5xl animate-fadeUp space-y-6">
       <PageHeader
         title="New sale"
-        subtitle="Record a sale for either business — with support for credit and partial payments."
+        subtitle="Record a sale — with support for credit and partial payments."
         actions={
           <Link to="/sales" className="btn-outline">
             Cancel
@@ -215,7 +217,6 @@ export default function NewSalePage() {
               </select>
               {selectedBusiness && (
                 <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-faint">
-                  {selectedBusiness.name.includes('Bakery') ? <Wheat className="h-3.5 w-3.5" /> : <GlassWater className="h-3.5 w-3.5" />}
                   {selectedBusiness.description}
                 </p>
               )}

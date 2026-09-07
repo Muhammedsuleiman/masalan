@@ -182,7 +182,7 @@ export default function ReportsPage() {
 
             {comparison.length > 1 && (
               <Card padded>
-                <CardHeader title="Business comparison" subtitle="Bakery vs Water Factory" />
+                <CardHeader title="Business comparison" subtitle="How each business is performing" />
                 <BusinessComparisonChart data={comparison} />
               </Card>
             )}

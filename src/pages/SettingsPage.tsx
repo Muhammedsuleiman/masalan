@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Building2, Package, UserPlus, Settings as SettingsIcon, CheckCircle2, Pencil, Server } from 'lucide-react'
+import { Building2, Package, UserPlus, Settings as SettingsIcon, CheckCircle2, Pencil, Server, Tags, Plus } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useBusinesses } from '../hooks/useBusinesses'
-import { fetchBusinesses, updateBusiness, createBusiness } from '../services/dataService'
+import { fetchBusinesses, updateBusiness, createBusiness, fetchExpenseCategories, createExpenseCategory, updateExpenseCategory } from '../services/dataService'
 import { updateOwnProfileFullName } from '../services/authService'
-import type { Business } from '../types'
+import type { Business, ExpenseCategory } from '../types'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Card, CardHeader } from '../components/ui/Card'
 import { Alert } from '../components/ui/Alert'
@@ -43,6 +43,48 @@ function OwnerSettings() {
   const [formName, setFormName] = useState('')
   const [formDesc, setFormDesc] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const [expenseCategories, setExpenseCategories] = useState<ExpenseCategory[]>([])
+  const [catName, setCatName] = useState('')
+  const [catSaving, setCatSaving] = useState(false)
+
+  useEffect(() => {
+    void fetchBusinesses(true).then(setAllBusinesses).catch(() => setAllBusinesses([])).finally(() => setLoading(false))
+  }, [businesses])
+
+  useEffect(() => {
+    void fetchExpenseCategories(true).then(setExpenseCategories).catch(() => setExpenseCategories([]))
+  }, [])
+
+  const loadCategories = async () => {
+    try {
+      const data = await fetchExpenseCategories(true)
+      setExpenseCategories(data)
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const saveCategory = async () => {
+    if (!catName.trim()) {
+      setError('Category name is required.')
+      return
+    }
+    setCatSaving(true)
+    const { error: err } = await createExpenseCategory(catName.trim())
+    setCatSaving(false)
+    if (err) { setError(err); return }
+    setSuccess(`${catName.trim()} added as an expense category.`)
+    setCatName('')
+    await loadCategories()
+  }
+
+  const toggleCategory = async (c: ExpenseCategory) => {
+    const { error: err } = await updateExpenseCategory(c.id, { active: !c.active })
+    if (err) { setError(err); return }
+    setSuccess(c.active ? `Category "${c.name}" deactivated.` : `Category "${c.name}" re-activated.`)
+    await loadCategories()
+  }
 
   useEffect(() => {
     void fetchBusinesses(true).then(setAllBusinesses).catch(() => setAllBusinesses([])).finally(() => setLoading(false))
@@ -98,7 +140,7 @@ function OwnerSettings() {
       {success && <Alert tone="success"><span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> {success}</span></Alert>}
 
       <Card>
-        <CardHeader title="Businesses" subtitle="Manage both businesses and their descriptions." action={
+        <CardHeader title="Businesses" subtitle="Manage your business operations and their descriptions." action={
           <Button size="sm" onClick={() => { setCreateOpen(true); setEditBusiness(null); setFormName(''); setFormDesc(''); }}>
             <Building2 className="h-4 w-4" /> Add business
           </Button>
@@ -130,6 +172,36 @@ function OwnerSettings() {
         )}
       </Card>
 
+      <Card>
+        <CardHeader title="Expense categories" subtitle="Categories available when recording expenses. Deactivated categories are hidden from new entries but keep their history." />
+        <div className="flex flex-col gap-3">
+          {expenseCategories.length === 0 ? (
+            <p className="text-sm text-ink-faint">No expense categories configured.</p>
+          ) : (
+            <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100">
+              {expenseCategories.map((c) => (
+                <li key={c.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
+                  <div className="flex items-center gap-2">
+                    <Tags className={`h-4 w-4 ${c.active ? 'text-brand-700' : 'text-ink-faint'}`} />
+                    <span className={`text-sm font-medium ${c.active ? 'text-ink' : 'text-ink-faint'}`}>{c.name}</span>
+                    <span className="text-xs text-ink-faint">order {c.sort_order}</span>
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={() => void toggleCategory(c)}>
+                    {c.active ? 'Deactivate' : 'Activate'}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <input className="input flex-1" placeholder="New category name…" value={catName} onChange={(e) => setCatName(e.target.value)} />
+            <Button onClick={() => void saveCategory()} loading={catSaving}>
+              <Plus className="h-4 w-4" /> Add category
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader title="Quick links" subtitle="Manage products, users and more." />
@@ -150,7 +222,7 @@ function OwnerSettings() {
         </Card>
 
         <Card>
-          <CardHeader title="My profile" subtitle="Your display name (Mr. Suleman)." />
+          <CardHeader title="My profile" subtitle="Your display name used across the system." />
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
               <label className="label">Full name</label>

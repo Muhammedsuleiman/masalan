@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { HandCoins, Search, Eye } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
-import { fetchCreditSales } from '../services/financeService'
+import { fetchCreditSales, fetchCustomerCreditSummaries, type CustomerCreditSummary } from '../services/financeService'
 import type { Sale } from '../types'
 import { formatNaira, formatDate } from '../lib/money'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -20,10 +20,12 @@ export default function CreditPage() {
   const [businessId, setBusinessId] = useState('')
   const [search, setSearch] = useState('')
   const [sales, setSales] = useState<Sale[]>([])
+  const [customerSummaries, setCustomerSummaries] = useState<CustomerCreditSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [detailSaleId, setDetailSaleId] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'customers' | 'sales'>('customers')
 
   const load = async () => {
     setLoading(true)
@@ -31,6 +33,8 @@ export default function CreditPage() {
     try {
       const data = await fetchCreditSales({ businessId: businessId || null, search: search || undefined })
       setSales(data)
+      const summaries = await fetchCustomerCreditSummaries(search || undefined)
+      setCustomerSummaries(summaries)
     } catch (e) {
       setError((e as Error).message)
     } finally {
@@ -44,15 +48,23 @@ export default function CreditPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [businessId, search])
 
-  const totalOutstanding = useMemo(() => sales.reduce((acc, s) => acc + s.amount_outstanding, 0), [sales])
+  const totalOutstanding = useMemo(
+    () => customerSummaries.reduce((acc, c) => acc + c.total_outstanding, 0),
+    [customerSummaries],
+  )
   const pageCount = Math.max(1, Math.ceil(sales.length / PAGE_SIZE))
   const visible = useMemo(() => sales.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [sales, page])
+  const customersPageCount = Math.max(1, Math.ceil(customerSummaries.length / PAGE_SIZE))
+  const visibleCustomers = useMemo(
+    () => customerSummaries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [customerSummaries, page],
+  )
 
   return (
     <div className="animate-fadeUp space-y-6">
       <PageHeader
-        title="Credit"
-        subtitle="Sales with unpaid balances — full visibility for the Owner, payments recorded here reduce outstanding."
+        title="Credit & Debts"
+        subtitle="Unpaid balances by customer — payments recorded here reduce outstanding automatically."
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -60,13 +72,13 @@ export default function CreditPage() {
           <p className="text-xs font-semibold uppercase tracking-wide text-red-400">Total outstanding</p>
           <p className="mt-1 text-2xl font-extrabold text-red-700">{formatNaira(totalOutstanding)}</p>
         </Card>
-        <Card className="border-red-100 bg-cream-100/60">
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Open credit sales</p>
-          <p className="mt-1 text-2xl font-extrabold text-brand-950">{sales.length}</p>
+        <Card className="border-brand-100 bg-cream-100/60">
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Customers owing</p>
+          <p className="mt-1 text-2xl font-extrabold text-brand-950">{customerSummaries.length}</p>
         </Card>
         <Card className="border-gold-100 bg-gold-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Status</p>
-          <p className="mt-1 text-2xl font-extrabold text-gold-800">Credit & Partial</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Open credit sales</p>
+          <p className="mt-1 text-2xl font-extrabold text-gold-800">{sales.length}</p>
         </Card>
       </div>
 
@@ -82,6 +94,22 @@ export default function CreditPage() {
               <option key={b.id} value={b.id}>{b.name}</option>
             ))}
           </select>
+          <div className="flex rounded-lg border border-brand-200 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setViewMode('customers')}
+              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'customers' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100'}`}
+            >
+              By customer
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('sales')}
+              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'sales' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100'}`}
+            >
+              By sale
+            </button>
+          </div>
         </div>
 
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
@@ -90,6 +118,40 @@ export default function CreditPage() {
           <div className="flex items-center justify-center py-24 text-brand-600">
             <Spinner className="h-6 w-6" />
           </div>
+        ) : viewMode === 'customers' ? (
+          customerSummaries.length === 0 ? (
+            <EmptyState
+              icon={HandCoins}
+              title="No outstanding credit"
+              description="All customers have fully paid. When credit sales are made, they will appear here."
+            />
+          ) : (
+            <>
+              <div className="table-wrap">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Customer</th>
+                      <th>Phone</th>
+                      <th className="!text-right">Open sales</th>
+                      <th className="!text-right">Total owed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {visibleCustomers.map((c) => (
+                      <tr key={c.customer_id}>
+                        <td className="font-semibold text-ink">{c.customer_name}</td>
+                        <td className="text-ink-soft">{c.customer_phone || '—'}</td>
+                        <td className="!text-right text-ink-soft">{c.open_sale_count}</td>
+                        <td className="!text-right font-bold text-red-600">{formatNaira(c.total_outstanding)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Pagination page={page} pageCount={customersPageCount} total={customerSummaries.length} pageSize={PAGE_SIZE} onChange={setPage} />
+            </>
+          )
         ) : sales.length === 0 ? (
           <EmptyState
             icon={HandCoins}

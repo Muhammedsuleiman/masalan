@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 import { getFriendlyError } from './authService'
-import type { Business, Customer, Product, Staff } from '../types'
+import type { Business, Customer, Product, Staff, ExpenseCategory } from '../types'
 
 // -----------------------------------------------------------------------------
 // Businesses
@@ -47,6 +47,7 @@ export async function fetchProducts(includeInactive = false): Promise<Product[]>
   return (data ?? []).map((row) => ({
     ...row,
     price: Number(row.price),
+    cost_price: row.cost_price !== null && row.cost_price !== undefined ? Number(row.cost_price) : null,
     business_name: (row as unknown as { business: { name: string } }).business?.name,
   })) as Product[]
 }
@@ -59,7 +60,7 @@ export async function fetchProductsByBusiness(businessId: string): Promise<Produ
     .eq('active', true)
     .order('price')
   if (error) throw new Error(getFriendlyError(error))
-  return (data ?? []).map((row) => ({ ...row, price: Number(row.price) })) as Product[]
+  return (data ?? []).map((row) => ({ ...row, price: Number(row.price), cost_price: row.cost_price !== null && row.cost_price !== undefined ? Number(row.cost_price) : null })) as Product[]
 }
 
 export async function createProduct(patch: {
@@ -67,6 +68,9 @@ export async function createProduct(patch: {
   name: string
   price: number
   unit: string
+  category?: string | null
+  cost_price?: number | null
+  description?: string | null
 }): Promise<{ id: string | null; error: string | null }> {
   const { data, error } = await supabase.from('products').insert(patch).select('id').single()
   if (error) return { id: null, error: getFriendlyError(error) }
@@ -76,7 +80,7 @@ export async function createProduct(patch: {
 
 export async function updateProduct(
   id: string,
-  patch: { name?: string; price?: number; unit?: string; active?: boolean },
+  patch: { name?: string; price?: number; unit?: string; active?: boolean; category?: string | null; cost_price?: number | null; description?: string | null },
 ): Promise<{ error: string | null }> {
   const { error } = await supabase.from('products').update(patch).eq('id', id)
   if (error) return { error: getFriendlyError(error) }
@@ -175,6 +179,34 @@ export async function deleteStaff(id: string): Promise<{ error: string | null }>
   const { error } = await supabase.from('staff').delete().eq('id', id)
   if (error) return { error: getFriendlyError(error) }
   await logAudit('staff.deleted', 'staff', id)
+  return { error: null }
+}
+
+// -----------------------------------------------------------------------------
+// Expense Categories
+// -----------------------------------------------------------------------------
+export async function fetchExpenseCategories(includeInactive = false): Promise<ExpenseCategory[]> {
+  let query = supabase.from('expense_categories').select('*').order('sort_order').order('name')
+  if (!includeInactive) query = query.eq('active', true)
+  const { data, error } = await query
+  if (error) throw new Error(getFriendlyError(error))
+  return (data ?? []) as ExpenseCategory[]
+}
+
+export async function createExpenseCategory(name: string, sortOrder = 0): Promise<{ id: string | null; error: string | null }> {
+  const { data, error } = await supabase.from('expense_categories').insert({ name, sort_order: sortOrder }).select('id').single()
+  if (error) return { id: null, error: getFriendlyError(error) }
+  await logAudit('expense_category.created', 'expense_category', data.id, { name })
+  return { id: data.id, error: null }
+}
+
+export async function updateExpenseCategory(
+  id: string,
+  patch: { name?: string; sort_order?: number; active?: boolean },
+): Promise<{ error: string | null }> {
+  const { error } = await supabase.from('expense_categories').update(patch).eq('id', id)
+  if (error) return { error: getFriendlyError(error) }
+  await logAudit('expense_category.updated', 'expense_category', id, patch)
   return { error: null }
 }
 

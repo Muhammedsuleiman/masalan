@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 import { Plus, TrendingDown, Search, Pencil, Trash2, CheckCircle2 } from 'lucide-react'
 import { useBusinesses } from '../hooks/useBusinesses'
 import { fetchExpenses, recordExpense, updateExpense, deleteExpense } from '../services/financeService'
-import type { Expense } from '../types'
+import { fetchExpenseCategories } from '../services/dataService'
+import type { Expense, ExpenseCategory, PaymentMethod } from '../types'
 import { useAuth } from '../contexts/AuthContext'
 import { formatNaira, formatDateTime, parseAmount } from '../lib/money'
 import { todayInputValue } from '../lib/dates'
@@ -20,19 +21,6 @@ import { ConfirmDialog } from '../components/ui/ConfirmDialog'
 
 const PAGE_SIZE = 12
 
-export const EXPENSE_CATEGORIES = [
-  'Materials',
-  'Fuel',
-  'Transport',
-  'Salaries & Wages',
-  'Rent',
-  'Utilities',
-  'Maintenance',
-  'Packaging',
-  'Marketing',
-  'Other',
-]
-
 export default function ExpensesPage() {
   const { profile } = useAuth()
   const isOwner = profile?.role === 'owner'
@@ -41,9 +29,11 @@ export default function ExpensesPage() {
 
   const [businessId, setBusinessId] = useState('')
   const [category, setCategory] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
   const [search, setSearch] = useState('')
 
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
@@ -57,9 +47,14 @@ export default function ExpensesPage() {
   const [formAmount, setFormAmount] = useState('')
   const [formDate, setFormDate] = useState(todayInputValue())
   const [formNotes, setFormNotes] = useState('')
+  const [formPaymentMethod, setFormPaymentMethod] = useState<PaymentMethod | ''>('')
   const [submitting, setSubmitting] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<Expense | null>(null)
   const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    void fetchExpenseCategories().then(setCategories).catch(() => setCategories([]))
+  }, [])
 
   const load = async () => {
     setLoading(true)
@@ -68,6 +63,7 @@ export default function ExpensesPage() {
       const data = await fetchExpenses({
         businessId: businessId || null,
         category: category || undefined,
+        status: statusFilter || undefined,
       })
       const filtered = search.trim()
         ? data.filter((e) => e.description.toLowerCase().includes(search.toLowerCase()) || e.category.toLowerCase().includes(search.toLowerCase()))
@@ -84,9 +80,10 @@ export default function ExpensesPage() {
     setPage(1)
     void load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [businessId, category, search])
+  }, [businessId, category, statusFilter, search])
 
-  const total = useMemo(() => expenses.reduce((acc, e) => acc + e.amount, 0), [expenses])
+  const activeExpenses = useMemo(() => expenses.filter((e) => e.status === 'active'), [expenses])
+  const total = useMemo(() => activeExpenses.reduce((acc, e) => acc + e.amount, 0), [activeExpenses])
   const pageCount = Math.max(1, Math.ceil(expenses.length / PAGE_SIZE))
   const visible = useMemo(() => expenses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), [expenses, page])
 
@@ -94,11 +91,12 @@ export default function ExpensesPage() {
     setEditing(null)
     setError(null)
     setFormBusiness(businesses[0]?.id ?? '')
-    setFormCategory(EXPENSE_CATEGORIES[0])
+    setFormCategory(categories[0]?.name ?? '')
     setFormDescription('')
     setFormAmount('')
     setFormDate(todayInputValue())
     setFormNotes('')
+    setFormPaymentMethod('')
     setModalOpen(true)
     setSearchParams({ quick: '1' })
   }
@@ -110,8 +108,10 @@ export default function ExpensesPage() {
     setFormCategory(expense.category)
     setFormDescription(expense.description)
     setFormAmount(String(expense.amount))
-    setFormDate(new Date(expense.expense_date).toISOString().slice(0, 10))
+    const d = new Date(expense.expense_date)
+    setFormDate(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
     setFormNotes(expense.notes ?? '')
+    setFormPaymentMethod(expense.payment_method ?? '')
     setModalOpen(true)
   }
 
@@ -142,6 +142,7 @@ export default function ExpensesPage() {
       amount,
       expense_date: formDate ? new Date(`${formDate}T12:00:00`).toISOString() : null,
       notes: formNotes.trim() || null,
+      payment_method: formPaymentMethod || null,
     }
     let result: { id: string | null; error: string | null }
     if (editing) {
@@ -160,6 +161,16 @@ export default function ExpensesPage() {
     void load()
   }
 
+  const voidExpense = async (expense: Expense) => {
+    const { error: err } = await updateExpense(expense.id, { status: 'voided' })
+    if (err) {
+      setError(err)
+      return
+    }
+    setSuccess('Expense voided. It is excluded from reports.')
+    void load()
+  }
+
   const confirmDelete = async () => {
     if (!deleteTarget) return
     setDeleting(true)
@@ -169,7 +180,7 @@ export default function ExpensesPage() {
       setError(err)
     } else {
       setDeleteTarget(null)
-      setSuccess('Expense deleted.')
+      setSuccess('Expense permanently deleted.')
       void load()
     }
   }
@@ -188,7 +199,7 @@ export default function ExpensesPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card className="border-red-100 bg-red-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-red-400">Total (current filters)</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-red-400">Total (active)</p>
           <p className="mt-1 text-2xl font-extrabold text-red-700">{formatNaira(total)}</p>
         </Card>
         <Card className="border-brand-100 bg-cream-100/60">
@@ -196,9 +207,9 @@ export default function ExpensesPage() {
           <p className="mt-1 text-2xl font-extrabold text-brand-950">{expenses.length}</p>
         </Card>
         <Card className="border-gold-100 bg-gold-50/50">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Average</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">Average (active)</p>
           <p className="mt-1 text-2xl font-extrabold text-gold-800">
-            {expenses.length ? formatNaira(total / expenses.length) : '₦0.00'}
+            {activeExpenses.length ? formatNaira(total / activeExpenses.length) : '₦0.00'}
           </p>
         </Card>
       </div>
@@ -223,9 +234,15 @@ export default function ExpensesPage() {
           </select>
           <select className="input !w-auto" value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">All categories</option>
-            {EXPENSE_CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.name}>{c.name}</option>
             ))}
+          </select>
+          <select className="input !w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="voided">Voided</option>
+            <option value="archived">Archived</option>
           </select>
         </div>
 
@@ -257,6 +274,8 @@ export default function ExpensesPage() {
                     <th>Category</th>
                     <th>Description</th>
                     <th className="!text-right">Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
                     <th>Recorded by</th>
                     <th className="!text-right">Actions</th>
                   </tr>
@@ -272,6 +291,20 @@ export default function ExpensesPage() {
                         {e.notes && <p className="truncate text-xs text-ink-faint">{e.notes}</p>}
                       </td>
                       <td className="!text-right font-bold text-red-600">{formatNaira(e.amount)}</td>
+                      <td>
+                        <Badge tone={e.payment_method === 'cash' ? 'brown' : 'gray'}>
+                          {e.payment_method === 'cash' ? 'Cash' : e.payment_method === 'bank_transfer' ? 'Bank' : '—'}
+                        </Badge>
+                      </td>
+                      <td>
+                        {e.status === 'active' ? (
+                          <Badge tone="green">Active</Badge>
+                        ) : e.status === 'voided' ? (
+                          <Badge tone="red">Voided</Badge>
+                        ) : (
+                          <Badge tone="gray">Archived</Badge>
+                        )}
+                      </td>
                       <td className="text-ink-soft">{e.recorder?.full_name || '—'}</td>
                       <td>
                         <div className="flex items-center justify-end gap-1">
@@ -285,6 +318,17 @@ export default function ExpensesPage() {
                               >
                                 <Pencil className="h-4 w-4" />
                               </button>
+                              {e.status === 'active' && (
+                                <button
+                                  type="button"
+                                  onClick={() => void voidExpense(e)}
+                                  className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-50"
+                                  aria-label="Void expense"
+                                  title="Void expense (excludes from reports)"
+                                >
+                                  <TrendingDown className="h-4 w-4" />
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => setDeleteTarget(e)}
@@ -328,8 +372,8 @@ export default function ExpensesPage() {
             <div>
               <label className="label">Category *</label>
               <select className="input" value={formCategory} onChange={(e) => setFormCategory(e.target.value)}>
-                {EXPENSE_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
             </div>
@@ -344,6 +388,14 @@ export default function ExpensesPage() {
             <div>
               <label className="label">Date *</label>
               <input type="date" className="input" value={formDate} max={todayInputValue()} onChange={(e) => setFormDate(e.target.value)} />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="label">Payment method</label>
+              <select className="input" value={formPaymentMethod} onChange={(e) => setFormPaymentMethod(e.target.value as PaymentMethod | '')}>
+                <option value="">— none —</option>
+                <option value="cash">Cash</option>
+                <option value="bank_transfer">Bank transfer</option>
+              </select>
             </div>
             <div className="sm:col-span-2">
               <label className="label">Notes</label>
@@ -362,8 +414,8 @@ export default function ExpensesPage() {
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         title="Delete expense"
-        message={`Delete the ${deleteTarget?.category ?? ''} expense of ${deleteTarget ? formatNaira(deleteTarget.amount) : ''}?`}
-        confirmLabel="Delete expense"
+        message={`Delete the ${deleteTarget?.category ?? ''} expense of ${deleteTarget ? formatNaira(deleteTarget.amount) : ''} permanently? Consider voiding instead to preserve financial history.`}
+        confirmLabel="Delete permanently"
         destructive
         loading={deleting}
         onConfirm={() => void confirmDelete()}

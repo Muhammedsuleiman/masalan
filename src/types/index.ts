@@ -23,6 +23,9 @@ export interface Product {
   business_id: string
   name: string
   price: number
+  category: string | null
+  cost_price: number | null
+  description: string | null
   unit: string
   active: boolean
   created_at: string
@@ -119,12 +122,24 @@ export interface Expense {
   description: string
   amount: number
   expense_date: string
+  payment_method: PaymentMethod | null
+  receipt_url: string | null
+  status: 'active' | 'voided' | 'archived'
   recorded_by: string | null
   notes: string | null
   created_at: string
   updated_at: string
   business?: { id: string; name: string }
   recorder?: { id: string; full_name: string } | null
+}
+
+export interface ExpenseCategory {
+  id: string
+  name: string
+  sort_order: number
+  active: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface AuditLog {

@@ -119,10 +119,10 @@ export default function CustomersPage() {
     setViewLoading(true)
     const [sales, payments] = await Promise.all([
       fetchSales({ customerId: c.id }),
-      fetchPayments({ saleId: undefined }),
+      fetchPayments({ customerId: c.id }),
     ])
     setViewSales(sales)
-    setViewPayments(payments.filter((p) => p.sale?.customer_id === c.id))
+    setViewPayments(payments)
     setViewLoading(false)
   }
 

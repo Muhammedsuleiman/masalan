@@ -54,9 +54,6 @@ export default function OwnerDashboardPage() {
 
   const stats = useMemo(() => (data ? computeStats(data) : null), [data])
 
-  const bakery = businesses.find((b) => b.name.toLowerCase().includes('bakery'))
-  const water = businesses.find((b) => b.name.toLowerCase().includes('water'))
-
   const names = useMemo(() => new Map(businesses.map((b) => [b.id, b.name])), [businesses])
   const daySeries = useMemo(() => (data ? buildDaySeries(data.sales, data.payments, data.expenses) : []), [data])
   const comparison = useMemo(() => (data ? buildBusinessComparison(names, data.sales, data.payments, data.expenses) : []), [data, names])
@@ -81,9 +78,6 @@ export default function OwnerDashboardPage() {
     [data],
   )
 
-  const bakeryStats = bakery ? businessTotals(data, bakery.id, outstandingByBiz.get(bakery.id)?.total ?? 0) : null
-  const waterStats = water ? businessTotals(data, water.id, outstandingByBiz.get(water.id)?.total ?? 0) : null
-
   const isAll = !filters.businessId
 
   return (
@@ -93,7 +87,7 @@ export default function OwnerDashboardPage() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-brand-950">Business Overview</h1>
           <p className="mt-1 text-sm text-ink-soft">
             {isAll
-              ? 'Combined performance across Masalan Bakery Limited and Masalan Water Factory.'
+              ? `Combined performance across ${businesses.map((b) => b.name).join(' and ') || 'all businesses'}.`
               : names.get(filters.businessId) ?? 'Selected business'}
           </p>
         </div>
@@ -125,34 +119,27 @@ export default function OwnerDashboardPage() {
           </div>
 
           {/* Business breakdown */}
-          {isAll && bakery && water && (bakeryStats || waterStats) && (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <Card>
-                <CardHeader title="Masalan Bakery Limited" subtitle="Masalan Bread — revenue & activity" />
-                <div className="grid grid-cols-2 gap-3">
-                  <MiniMetric label="Revenue" value={formatNaira(bakeryStats?.revenue)} />
-                  <MiniMetric label="Bread quantity sold" value={formatQuantity(sumQty(bakeryStats))} sub="loaves" />
-                  <MiniMetric label="Cash received" value={formatNaira(bakeryStats?.cashReceived)} />
-                  <MiniMetric label="Bank transfers" value={formatNaira(bakeryStats?.bankReceived)} />
-                  <MiniMetric label="Credit (not fully paid)" value={formatNaira(bakeryStats?.creditExtended)} sub={`${bakeryStats?.creditSalesCount ?? 0} sales`} />
-                  <MiniMetric label="Partial payments" value={String(bakeryStats?.partialSalesCount ?? 0)} sub="sales" />
-                  <MiniMetric label="Expenses" value={formatNaira(bakeryStats?.expensesTotal)} />
-                  <MiniMetric label="Outstanding amount" value={formatNaira(bakeryStats?.outstandingCredit)} />
-                </div>
-              </Card>
-              <Card>
-                <CardHeader title="Masalan Water Factory" subtitle="Pure Water — revenue & activity" />
-                <div className="grid grid-cols-2 gap-3">
-                  <MiniMetric label="Revenue" value={formatNaira(waterStats?.revenue)} />
-                  <MiniMetric label="Bags sold" value={formatQuantity(sumQty(waterStats))} sub="bags" />
-                  <MiniMetric label="Cash received" value={formatNaira(waterStats?.cashReceived)} />
-                  <MiniMetric label="Bank transfers" value={formatNaira(waterStats?.bankReceived)} />
-                  <MiniMetric label="Credit (not fully paid)" value={formatNaira(waterStats?.creditExtended)} sub={`${waterStats?.creditSalesCount ?? 0} sales`} />
-                  <MiniMetric label="Partial payments" value={String(waterStats?.partialSalesCount ?? 0)} sub="sales" />
-                  <MiniMetric label="Expenses" value={formatNaira(waterStats?.expensesTotal)} />
-                  <MiniMetric label="Outstanding amount" value={formatNaira(waterStats?.outstandingCredit)} />
-                </div>
-              </Card>
+          {isAll && businesses.length > 0 && (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+              {businesses.map((b) => {
+                const bizStats = businessTotals(data, b.id, outstandingByBiz.get(b.id)?.total ?? 0)
+                if (!bizStats) return null
+                return (
+                  <Card key={b.id}>
+                    <CardHeader title={b.name} subtitle={b.description ?? 'Business operation'} />
+                    <div className="grid grid-cols-2 gap-3">
+                      <MiniMetric label="Revenue" value={formatNaira(bizStats.revenue)} />
+                      <MiniMetric label="Units sold" value={formatQuantity(sumQty(bizStats))} />
+                      <MiniMetric label="Cash received" value={formatNaira(bizStats.cashReceived)} />
+                      <MiniMetric label="Bank transfers" value={formatNaira(bizStats.bankReceived)} />
+                      <MiniMetric label="Credit (not fully paid)" value={formatNaira(bizStats.creditExtended)} sub={`${bizStats.creditSalesCount} sales`} />
+                      <MiniMetric label="Partial payments" value={String(bizStats.partialSalesCount)} sub="sales" />
+                      <MiniMetric label="Expenses" value={formatNaira(bizStats.expensesTotal)} />
+                      <MiniMetric label="Outstanding amount" value={formatNaira(bizStats.outstandingCredit)} />
+                    </div>
+                  </Card>
+                )
+              })}
             </div>
           )}
 
@@ -170,7 +157,7 @@ export default function OwnerDashboardPage() {
 
           {isAll && comparison.length > 1 && (
             <Card padded>
-              <CardHeader title="Business comparison" subtitle="How the two businesses are performing" />
+              <CardHeader title="Business comparison" subtitle="How each business is performing" />
               <BusinessComparisonChart data={comparison} />
             </Card>
           )}
@@ -199,7 +186,6 @@ export default function OwnerDashboardPage() {
                 title: p.payment_method === 'cash' ? 'Cash payment' : 'Bank transfer',
                 detail: p.sale?.customer?.name ?? 'Sale payment',
                 right: <span className="font-semibold text-emerald-700">{formatNaira(p.amount)}</span>,
-                badge: <PaymentStatusBadge status="paid" />,
                 time: formatDateTime(p.payment_date),
               }))}
             />
@@ -212,7 +198,6 @@ export default function OwnerDashboardPage() {
                 title: e.category,
                 detail: e.description,
                 right: <span className="font-semibold text-red-600">−{formatNaira(e.amount)}</span>,
-                badge: <PaymentStatusBadge status="paid" />,
                 time: formatDateTime(e.expense_date),
               }))}
             />
@@ -251,7 +236,7 @@ interface RecentRow {
   title: string
   detail: string
   right: React.ReactNode
-  badge: React.ReactNode
+  badge?: React.ReactNode
   time: string
 }
 
