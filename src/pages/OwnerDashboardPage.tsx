@@ -19,6 +19,7 @@ import {
   buildDaySeries,
   buildBusinessComparison,
   fetchOutstandingByBusiness,
+  fetchLifetimeNetPosition,
   type PeriodData,
 } from '../services/reportService'
 import { StatCard } from '../components/ui/StatCard'
@@ -47,9 +48,11 @@ export default function OwnerDashboardPage() {
   const { businesses } = useBusinesses()
   const { data, loading, error } = usePeriodData(filters)
   const [outstandingByBiz, setOutstandingByBiz] = useState<Map<string, { total: number; count: number }>>(new Map())
+  const [lifetimeNet, setLifetimeNet] = useState<number | null>(null)
 
   useEffect(() => {
     void fetchOutstandingByBusiness().then(setOutstandingByBiz)
+    void fetchLifetimeNetPosition().then(setLifetimeNet).catch(() => setLifetimeNet(null))
   }, [])
 
   const stats = useMemo(() => (data ? computeStats(data) : null), [data])
@@ -113,6 +116,7 @@ export default function OwnerDashboardPage() {
             <StatCard label="Outstanding credit" value={formatNaira(stats.outstandingCredit)} icon={HandCoins} tone="red" sub={`${stats.outstandingCreditCount} open sale${stats.outstandingCreditCount === 1 ? '' : 's'}`} />
             <StatCard label="Expenses" value={formatNaira(stats.expensesTotal)} icon={TrendingDown} tone="blue" sub={`${stats.expenseCount} expense${stats.expenseCount === 1 ? '' : 's'}`} />
             <StatCard label="Net position" value={formatNaira(stats.netPosition)} icon={Scale} tone="green" sub="Payments received − expenses" />
+            <StatCard label="Total net position" value={formatNaira(lifetimeNet ?? 0)} icon={Scale} tone="cream" sub="All-time payments received − expenses" />
             <StatCard label="Cash received" value={formatNaira(stats.cashReceived)} icon={Banknote} tone="green" />
             <StatCard label="Bank transfers" value={formatNaira(stats.bankReceived)} icon={Layers} tone="gold" />
             <StatCard label="Credit sales" value={formatNaira(stats.creditExtended)} icon={HandCoins} tone="red" sub={`${stats.creditSalesCount} not fully paid`} />

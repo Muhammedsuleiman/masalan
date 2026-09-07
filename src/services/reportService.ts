@@ -161,6 +161,17 @@ export async function fetchOutstandingByBusiness(): Promise<Map<string, { total:
   return result
 }
 
+/** Lifetime net position: every payment received ever minus every active expense ever. */
+export async function fetchLifetimeNetPosition(): Promise<number> {
+  const [paymentsRes, expensesRes] = await Promise.allSettled([
+    supabase.from('payments').select('amount'),
+    supabase.from('expenses').select('amount').eq('status', 'active'),
+  ])
+  const payments = paymentsRes.status === 'fulfilled' ? (paymentsRes.value.data ?? []) : []
+  const expenses = expensesRes.status === 'fulfilled' ? (expensesRes.value.data ?? []) : []
+  return fromKobo(sumKobo(...payments.map((p) => p.amount)) - sumKobo(...expenses.map((e) => e.amount)))
+}
+
 export function computeStats(data: PeriodData): Stats {
   const sales = data.sales
   const payments = data.payments
