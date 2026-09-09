@@ -14,26 +14,26 @@ export function Pagination({ page, pageCount, total, pageSize, onChange }: Pagin
 
   return (
     <div className="flex flex-col items-center justify-between gap-3 px-1 py-3 sm:flex-row">
-      <p className="text-xs text-ink-soft">
+      <p className="text-xs text-ink-soft dark:text-cream-400/70">
         Showing {Math.min((page - 1) * pageSize + 1, total)}–{Math.min(page * pageSize, total)} of {total}
       </p>
       <div className="flex items-center gap-1">
         <button
           type="button"
-          className="rounded-lg border border-brand-200 p-1.5 text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded-lg border border-brand-200 p-1.5 text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-brand-700 dark:text-cream-200 dark:hover:bg-white/10"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
           aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        <span className="px-3 text-sm font-semibold text-brand-800">
+        <span className="px-3 text-sm font-semibold text-brand-800 dark:text-cream-100">
           Page {page} of {pageCount}
         </span>
         <button
           type="button"
           className={cn(
-            'rounded-lg border border-brand-200 p-1.5 text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40 disabled:cursor-not-allowed',
+            'rounded-lg border border-brand-200 p-1.5 text-brand-700 transition-colors hover:bg-brand-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-brand-700 dark:text-cream-200 dark:hover:bg-white/10',
           )}
           disabled={page >= pageCount}
           onClick={() => onChange(page + 1)}

@@ -167,9 +167,9 @@ export default function PaymentsPage() {
       )}
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center dark:border-brand-800">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search by customer or note…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={businessId} onChange={(e) => setBusinessId(e.target.value)}>
@@ -188,7 +188,7 @@ export default function PaymentsPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : payments.length === 0 ? (
@@ -220,17 +220,17 @@ export default function PaymentsPage() {
                 <tbody>
                   {visible.map((p) => (
                     <tr key={p.id}>
-                      <td className="whitespace-nowrap text-ink-soft">{formatDateTime(p.payment_date)}</td>
-                      <td className="font-semibold text-ink">{p.sale?.customer?.name ?? '—'}</td>
-                      <td className="text-ink-soft">{p.sale?.business?.name ?? '—'}</td>
-                      <td className="!text-right font-bold text-emerald-700">{formatNaira(p.amount)}</td>
+                      <td className="whitespace-nowrap text-ink-soft dark:text-cream-300">{formatDateTime(p.payment_date)}</td>
+                      <td className="font-semibold text-ink dark:text-cream-100">{p.sale?.customer?.name ?? '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{p.sale?.business?.name ?? '—'}</td>
+                      <td className="!text-right font-bold text-emerald-700 dark:text-emerald-400">{formatNaira(p.amount)}</td>
                       <td>
                         <Badge tone={p.payment_method === 'cash' ? 'brown' : 'blue'}>
                           {p.payment_method === 'cash' ? 'Cash' : 'Bank transfer'}
                         </Badge>
                       </td>
-                      <td className="text-ink-soft">{p.recorder?.full_name || '—'}</td>
-                      <td className="max-w-[160px] truncate text-ink-faint">{p.notes || '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{p.recorder?.full_name || '—'}</td>
+                      <td className="max-w-[160px] truncate text-ink-faint dark:text-cream-400/70">{p.notes || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -261,10 +261,10 @@ export default function PaymentsPage() {
               ))}
             </select>
             {selectedSale && (
-              <div className="mt-2 rounded-xl bg-cream-100/70 p-3 text-sm">
-                <p className="font-semibold text-ink">Sale total: {formatNaira(selectedSale.total_amount)}</p>
-                <p className="text-ink-soft">
-                  Paid: {formatNaira(selectedSale.amount_paid)} · Outstanding: <span className="font-bold text-red-600">{formatNaira(selectedSale.amount_outstanding)}</span>
+              <div className="mt-2 rounded-xl bg-cream-100/70 p-3 text-sm dark:bg-white/5">
+                <p className="font-semibold text-ink dark:text-cream-100">Sale total: {formatNaira(selectedSale.total_amount)}</p>
+                <p className="text-ink-soft dark:text-cream-300">
+                  Paid: {formatNaira(selectedSale.amount_paid)} · Outstanding: <span className="font-bold text-red-600 dark:text-red-400">{formatNaira(selectedSale.amount_outstanding)}</span>
                 </p>
               </div>
             )}

@@ -160,9 +160,9 @@ export default function StaffPage() {
       )}
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center dark:border-brand-800">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search by name or position…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={businessFilter} onChange={(e) => setBusinessFilter(e.target.value)}>
@@ -176,7 +176,7 @@ export default function StaffPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : staff.length === 0 ? (
@@ -207,23 +207,23 @@ export default function StaffPage() {
                 <tbody>
                   {visible.map((s) => (
                     <tr key={s.id}>
-                      <td className="font-semibold text-ink">{s.name}</td>
-                      <td className="text-ink-soft">{s.business_name ?? '—'}</td>
-                      <td className="text-ink-soft">{s.position || '—'}</td>
-                      <td className="text-ink-soft">{s.phone || '—'}</td>
+                      <td className="font-semibold text-ink dark:text-cream-100">{s.name}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{s.business_name ?? '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{s.position || '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{s.phone || '—'}</td>
                       <td>
                         <Badge tone={s.active ? 'green' : 'gray'}>{s.active ? 'Active' : 'Inactive'}</Badge>
                       </td>
                       <td>
                         <div className="flex items-center justify-end gap-1">
-                          <button type="button" onClick={() => openEdit(s)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="Edit worker">
+                          <button type="button" onClick={() => openEdit(s)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10" aria-label="Edit worker">
                             <Pencil className="h-4 w-4" />
                           </button>
-                          <button type="button" onClick={() => void toggleActive(s)} className="rounded-lg px-2 py-1 text-xs font-semibold text-brand-700 transition-colors hover:bg-brand-50">
+                          <button type="button" onClick={() => void toggleActive(s)} className="rounded-lg px-2 py-1 text-xs font-semibold text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10">
                             {s.active ? 'Deactivate' : 'Activate'}
                           </button>
                           {isOwner && (
-                            <button type="button" onClick={() => setDeleteTarget(s)} className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600" aria-label="Delete worker">
+                            <button type="button" onClick={() => setDeleteTarget(s)} className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600 dark:text-cream-400/70 dark:hover:bg-red-500/15 dark:hover:text-red-400" aria-label="Delete worker">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           )}

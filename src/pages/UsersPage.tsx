@@ -151,9 +151,9 @@ export default function UsersPage() {
       )}
 
       <Card padded={false}>
-        <div className="flex items-center gap-3 border-b border-brand-100 p-4">
+        <div className="flex items-center gap-3 border-b border-brand-100 p-4 dark:border-brand-800">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search users…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <Button variant="outline" onClick={() => void load()} size="sm">
@@ -164,7 +164,7 @@ export default function UsersPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : filtered.length === 0 ? (
@@ -187,12 +187,12 @@ export default function UsersPage() {
                     <td>
                       <NameCell name={u.full_name} onSave={(name) => void rename(u, name)} isSelf={u.id === currentUser?.id} />
                     </td>
-                    <td className="text-ink-soft">{u.email}</td>
+                    <td className="text-ink-soft dark:text-cream-300">{u.email}</td>
                     <td><RoleBadge role={u.role} /></td>
-                    <td className="whitespace-nowrap text-ink-soft">{formatDateTime(u.created_at)}</td>
+                    <td className="whitespace-nowrap text-ink-soft dark:text-cream-300">{formatDateTime(u.created_at)}</td>
                     <td>
                       {u.id === currentUser?.id ? (
-                        <span className="text-xs text-ink-faint">Current user</span>
+                        <span className="text-xs text-ink-faint dark:text-cream-400/70">Current user</span>
                       ) : (
                         <select
                           className="input !w-auto !py-1.5"
@@ -278,12 +278,12 @@ function NameCell({ name, onSave, isSelf }: { name: string; onSave: (name: strin
     <button
       type="button"
       onClick={() => { setValue(name); setEditing(true); }}
-      className="group flex items-center gap-1.5 font-semibold text-ink"
+      className="group flex items-center gap-1.5 font-semibold text-ink dark:text-cream-100"
       title="Click to rename"
     >
       {name || '—'}
       {isSelf && <span className="badge-gray !text-[10px]">you</span>}
-      <span className="text-xs text-ink-faint opacity-0 transition-opacity group-hover:opacity-100">✎</span>
+      <span className="text-xs text-ink-faint opacity-0 transition-opacity group-hover:opacity-100 dark:text-cream-400/70">✎</span>
     </button>
   )
 }

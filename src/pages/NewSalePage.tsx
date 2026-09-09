@@ -216,7 +216,7 @@ export default function NewSalePage() {
                 ))}
               </select>
               {selectedBusiness && (
-                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-faint">
+                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-faint dark:text-cream-400/70">
                   {selectedBusiness.description}
                 </p>
               )}
@@ -231,17 +231,17 @@ export default function NewSalePage() {
         {/* Customer */}
         <Card>
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-bold text-brand-900">Customer</h3>
+            <h3 className="text-base font-bold text-brand-900 dark:text-cream-100">Customer</h3>
             <Button type="button" variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}>
               <UserPlus className="h-4 w-4" /> New customer
             </Button>
           </div>
 
           {selectedCustomer ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-500/30 dark:bg-emerald-500/10">
               <div>
-                <p className="font-semibold text-emerald-900">{selectedCustomer.name}</p>
-                <p className="text-xs text-emerald-700">
+                <p className="font-semibold text-emerald-900 dark:text-emerald-200">{selectedCustomer.name}</p>
+                <p className="text-xs text-emerald-700 dark:text-emerald-300">
                   {selectedCustomer.customer_type === 'business'
                     ? selectedCustomer.business_name ?? selectedCustomer.name
                     : 'Individual customer'}
@@ -249,8 +249,8 @@ export default function NewSalePage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                <button type="button" className="text-xs font-semibold text-emerald-700 underline" onClick={() => setCustomerId('')}>
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <button type="button" className="text-xs font-semibold text-emerald-700 underline dark:text-emerald-300" onClick={() => setCustomerId('')}>
                   Change
                 </button>
               </div>
@@ -258,7 +258,7 @@ export default function NewSalePage() {
           ) : (
             <div>
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
                 <input
                   className="input pl-10"
                   placeholder="Search customers by name, business or phone…"
@@ -266,9 +266,9 @@ export default function NewSalePage() {
                   onChange={(e) => setCustomerQuery(e.target.value)}
                 />
               </div>
-              <div className="mt-3 max-h-64 overflow-y-auto rounded-xl border border-brand-100 scrollbar-thin">
+              <div className="mt-3 max-h-64 overflow-y-auto rounded-xl border border-brand-100 scrollbar-thin dark:border-brand-800">
                 {filteredCustomers.length === 0 ? (
-                  <p className="p-4 text-sm text-ink-faint">
+                  <p className="p-4 text-sm text-ink-faint dark:text-cream-400/70">
                     No customers found. Create one with the button above.
                   </p>
                 ) : (
@@ -277,11 +277,11 @@ export default function NewSalePage() {
                       key={c.id}
                       type="button"
                       onClick={() => setCustomerId(c.id)}
-                      className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-brand-50"
+                      className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-brand-50 dark:hover:bg-white/5"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-ink">{c.name}</p>
-                        <p className="truncate text-xs text-ink-faint">
+                        <p className="text-sm font-semibold text-ink dark:text-cream-100">{c.name}</p>
+                        <p className="truncate text-xs text-ink-faint dark:text-cream-400/70">
                           {c.customer_type === 'business' && c.business_name ? `${c.business_name} · ` : ''}
                           {c.phone ?? 'no phone'}
                         </p>
@@ -297,10 +297,10 @@ export default function NewSalePage() {
 
         {/* Products */}
         <Card>
-          <h3 className="mb-3 text-base font-bold text-brand-900">Products</h3>
+          <h3 className="mb-3 text-base font-bold text-brand-900 dark:text-cream-100">Products</h3>
           <div className="space-y-3">
             {lines.map((line) => (
-              <div key={line.key} className="flex flex-col gap-2 rounded-xl border border-brand-100 bg-cream-50/50 p-3 sm:flex-row sm:items-center">
+              <div key={line.key} className="flex flex-col gap-2 rounded-xl border border-brand-100 bg-cream-50/50 p-3 sm:flex-row sm:items-center dark:border-brand-800 dark:bg-brand-950/40">
                 <div className="flex-1">
                   <select
                     className="input"
@@ -327,13 +327,13 @@ export default function NewSalePage() {
                       onChange={(e) => changeItem(line.key, { quantity: e.target.value })}
                     />
                   </div>
-                  <div className="w-28 text-right text-sm font-bold text-brand-950">
+                  <div className="w-28 text-right text-sm font-bold text-brand-950 dark:text-cream-50">
                     {formatNaira(line.subtotal)}
                   </div>
                   <button
                     type="button"
                     onClick={() => removeItem(line.key)}
-                    className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600 dark:text-cream-400/70 dark:hover:bg-red-500/15 dark:hover:text-red-400"
                     aria-label="Remove item"
                     disabled={items.length === 1}
                   >
@@ -349,15 +349,15 @@ export default function NewSalePage() {
               <Plus className="h-4 w-4" /> Add product
             </Button>
             <div className="text-right">
-              <p className="text-xs text-ink-faint">Total</p>
-              <p className="font-display text-2xl font-extrabold text-brand-950">{formatNaira(total)}</p>
+              <p className="text-xs text-ink-faint dark:text-cream-400/70">Total</p>
+              <p className="font-display text-2xl font-extrabold text-brand-950 dark:text-cream-50">{formatNaira(total)}</p>
             </div>
           </div>
         </Card>
 
         {/* Payment + staff */}
         <Card>
-          <h3 className="mb-3 text-base font-bold text-brand-900">Payment</h3>
+          <h3 className="mb-3 text-base font-bold text-brand-900 dark:text-cream-100">Payment</h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label className="label">Amount paid (₦)</label>
@@ -396,13 +396,13 @@ export default function NewSalePage() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-xl bg-cream-100/70 p-4">
+          <div className="mt-4 rounded-xl bg-cream-100/70 p-4 dark:bg-white/5">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <SummaryRow label="Total" value={formatNaira(total)} />
               <SummaryRow label="Paid" value={formatNaira(paid)} />
               <SummaryRow label="Outstanding" value={formatNaira(outstanding)} tone={outstanding > 0 ? 'red' : 'green'} />
               <div>
-                <p className="text-xs font-semibold text-ink-faint">Status</p>
+                <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Status</p>
                 <div className="mt-1"><PaymentStatusBadge status={status} /></div>
               </div>
             </div>
@@ -440,8 +440,8 @@ export default function NewSalePage() {
 function SummaryRow({ label, value, tone }: { label: string; value: string; tone?: 'red' | 'green' }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-ink-faint">{label}</p>
-      <p className={`text-lg font-extrabold ${tone === 'red' ? 'text-red-600' : tone === 'green' ? 'text-emerald-700' : 'text-brand-950'}`}>
+      <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">{label}</p>
+      <p className={`text-lg font-extrabold ${tone === 'red' ? 'text-red-600 dark:text-red-400' : tone === 'green' ? 'text-emerald-700 dark:text-emerald-400' : 'text-brand-950 dark:text-cream-50'}`}>
         {value}
       </p>
     </div>

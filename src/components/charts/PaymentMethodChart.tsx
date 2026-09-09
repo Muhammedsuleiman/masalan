@@ -1,8 +1,10 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { useChartColors } from '../../lib/chartTheme'
 
 const COLORS = ['#5c3a24', '#d4af37']
 
 export function PaymentMethodChart({ data }: { data: Array<{ name: string; value: number }> }) {
+  const c = useChartColors()
   const total = data.reduce((acc, d) => acc + d.value, 0)
   if (total <= 0) return null
 
@@ -17,10 +19,11 @@ export function PaymentMethodChart({ data }: { data: Array<{ name: string; value
           </Pie>
           <Tooltip
             contentStyle={{
+              backgroundColor: c.tooltipBg,
               borderRadius: 12,
-              border: '1px solid #f3ede0',
+              border: `1px solid ${c.tooltipBorder}`,
               fontSize: 12,
-              boxShadow: '0 8px 24px rgba(61,44,34,0.08)',
+              boxShadow: c.tooltipShadow,
             }}
             formatter={(value) => `₦${Number(value).toLocaleString('en-NG')}`}
           />
@@ -30,8 +33,8 @@ export function PaymentMethodChart({ data }: { data: Array<{ name: string; value
         {data.map((d, i) => (
           <div key={d.name} className="flex items-center gap-2 text-sm">
             <span className="h-3 w-3 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-            <span className="font-medium text-ink">{d.name}</span>
-            <span className="ml-2 font-bold text-brand-950">₦{d.value.toLocaleString('en-NG')}</span>
+            <span className="font-medium text-ink dark:text-cream-100">{d.name}</span>
+            <span className="ml-2 font-bold text-brand-950 dark:text-cream-50">₦{d.value.toLocaleString('en-NG')}</span>
           </div>
         ))}
       </div>

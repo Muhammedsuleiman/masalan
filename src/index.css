@@ -7,7 +7,7 @@
     @apply antialiased;
   }
   body {
-    @apply bg-cream-100 text-ink font-sans text-[15px] leading-relaxed;
+    @apply bg-cream-100 text-ink font-sans text-[15px] leading-relaxed dark:bg-brand-950 dark:text-cream-100;
   }
   ::selection {
     @apply bg-gold-300/60 text-brand-900;
@@ -16,31 +16,31 @@
 
 @layer components {
   .card {
-    @apply bg-white rounded-2xl shadow-card border border-brand-100/60;
+    @apply bg-white rounded-2xl shadow-card border border-brand-100/60 dark:bg-brand-900/80 dark:border-brand-800;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed dark:focus-visible:ring-offset-brand-950;
   }
   .btn-primary {
-    @apply btn bg-brand-800 text-cream-50 hover:bg-brand-900 shadow-sm;
+    @apply btn bg-brand-800 text-cream-50 hover:bg-brand-900 shadow-sm dark:bg-gold-500 dark:text-brand-950 dark:hover:bg-gold-400;
   }
   .btn-gold {
     @apply btn bg-gold-500 text-brand-950 hover:bg-gold-600 shadow-sm;
   }
   .btn-outline {
-    @apply btn border border-brand-200 bg-white text-brand-800 hover:bg-brand-50;
+    @apply btn border border-brand-200 bg-white text-brand-800 hover:bg-brand-50 dark:border-brand-700 dark:bg-brand-900 dark:text-cream-100 dark:hover:bg-brand-800;
   }
   .btn-ghost {
-    @apply btn text-brand-700 hover:bg-brand-50;
+    @apply btn text-brand-700 hover:bg-brand-50 dark:text-cream-200 dark:hover:bg-white/10;
   }
   .btn-danger {
     @apply btn bg-red-600 text-white hover:bg-red-700;
   }
   .input {
-    @apply w-full rounded-xl border border-brand-200 bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/30 transition-shadow;
+    @apply w-full rounded-xl border border-brand-200 bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/30 transition-shadow dark:border-brand-700 dark:bg-brand-900 dark:text-cream-100 dark:placeholder:text-cream-400/50;
   }
   .label {
-    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-brand-700;
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-gold-300;
   }
   .table-wrap {
     @apply overflow-x-auto;
@@ -49,14 +49,21 @@
     @apply w-full min-w-full text-sm;
   }
   .table thead th {
-    @apply px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-brand-600 bg-cream-50 border-b border-brand-100 whitespace-nowrap;
+    @apply px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-brand-600 bg-cream-50 border-b border-brand-100 whitespace-nowrap dark:text-gold-300 dark:bg-brand-950/60 dark:border-brand-800;
   }
   .table tbody td {
-    @apply px-4 py-3 border-b border-brand-50 align-middle;
+    @apply px-4 py-3 border-b border-brand-50 align-middle dark:border-brand-800/70;
   }
   .table tbody tr {
-    @apply hover:bg-brand-50/40 transition-colors;
+    @apply hover:bg-brand-50/40 transition-colors dark:hover:bg-white/5;
   }
+  .badge-green { @apply badge bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300; }
+  .badge-amber { @apply badge bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300; }
+  .badge-red { @apply badge bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300; }
+  .badge-gray { @apply badge bg-stone-100 text-stone-600 dark:bg-stone-500/15 dark:text-stone-300; }
+  .badge-gold { @apply badge bg-gold-100 text-gold-800 dark:bg-gold-500/15 dark:text-gold-300; }
+  .badge-brown { @apply badge bg-brand-100 text-brand-800 dark:bg-brand-700/30 dark:text-gold-300; }
+  .badge-blue { @apply badge bg-sky-100 text-sky-800 dark:bg-sky-500/15 dark:text-sky-300; }
   .badge {
     @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap;
   }
@@ -75,7 +82,7 @@
     width: 8px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-brand-200 rounded-full;
+    @apply bg-brand-200 rounded-full dark:bg-brand-700;
   }
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;

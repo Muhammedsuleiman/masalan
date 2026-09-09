@@ -157,14 +157,14 @@ export function MfaSection() {
           {error && <Alert tone="error">{error}</Alert>}
 
           {factorEnabled ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 dark:border-emerald-500/30 dark:bg-emerald-500/10">
               <div className="flex items-center gap-3">
                 <div className="rounded-xl bg-emerald-600 p-2.5 text-white">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-ink">2FA is protecting this account</p>
-                  <p className="text-xs text-ink-soft">
+                  <p className="font-semibold text-ink dark:text-cream-100">2FA is protecting this account</p>
+                  <p className="text-xs text-ink-soft dark:text-cream-300">
                     Your authenticator app is required at every sign-in.
                   </p>
                 </div>
@@ -174,14 +174,14 @@ export function MfaSection() {
               </Button>
             </div>
           ) : (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-100 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-100 p-4 dark:border-brand-800">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-brand-100 p-2.5 text-brand-700">
+                <div className="rounded-xl bg-brand-100 p-2.5 text-brand-700 dark:bg-brand-700/40 dark:text-gold-300">
                   <Smartphone className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-ink">Add an extra layer of security</p>
-                  <p className="text-xs text-ink-soft">
+                  <p className="font-semibold text-ink dark:text-cream-100">Add an extra layer of security</p>
+                  <p className="text-xs text-ink-soft dark:text-cream-300">
                     Each sign-in will ask for a code from your authenticator app.
                   </p>
                 </div>
@@ -204,13 +204,13 @@ export function MfaSection() {
           <div className="space-y-4">
             {error && <Alert tone="error">{error}</Alert>}
 
-            <div className="rounded-2xl bg-emerald-50/60 p-4">
-              <p className="flex items-center gap-2 text-sm font-bold text-emerald-800">
+            <div className="rounded-2xl bg-emerald-50/60 p-4 dark:bg-emerald-500/10">
+              <p className="flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-300">
                 <ShieldCheck className="h-4 w-4" /> Keep a recovery copy
               </p>
-              <p className="mt-1 text-sm text-ink-soft">
+              <p className="mt-1 text-sm text-ink-soft dark:text-cream-300">
                 If you lose your authenticator device, your account cannot recover itself. Write down{' '}
-                <span className="font-mono text-xs text-ink">{secret}</span> (under "Enter manually") and keep it safe
+                <span className="font-mono text-xs text-ink dark:text-cream-100">{secret}</span> (under "Enter manually") and keep it safe
                 before continuing.
               </p>
             </div>
@@ -220,18 +220,18 @@ export function MfaSection() {
                 <img
                   src={qrCode}
                   alt="Scan with your authenticator app"
-                  className="h-48 w-48 rounded-xl border border-brand-100 bg-white p-2"
+                  className="h-48 w-48 rounded-xl border border-brand-100 bg-white p-2 dark:border-brand-700 dark:bg-brand-950"
                 />
-                <p className="text-sm text-ink-soft">Scan this QR code in your authenticator app.</p>
+                <p className="text-sm text-ink-soft dark:text-cream-300">Scan this QR code in your authenticator app.</p>
               </div>
             ) : (
-              <p className="text-sm text-ink-faint">Could not generate a QR code. Try again.</p>
+              <p className="text-sm text-ink-faint dark:text-cream-400/70">Could not generate a QR code. Try again.</p>
             )}
 
             {uri && (
-              <details className="rounded-xl border border-brand-100 p-3">
-                <summary className="cursor-pointer text-sm font-semibold text-brand-700">Enter manually</summary>
-                <p className="mt-2 break-all font-mono text-xs text-ink-soft">{uri}</p>
+              <details className="rounded-xl border border-brand-100 p-3 dark:border-brand-800">
+                <summary className="cursor-pointer text-sm font-semibold text-brand-700 dark:text-gold-300">Enter manually</summary>
+                <p className="mt-2 break-all font-mono text-xs text-ink-soft dark:text-cream-300">{uri}</p>
               </details>
             )}
 

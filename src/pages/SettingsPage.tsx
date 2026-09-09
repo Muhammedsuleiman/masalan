@@ -147,16 +147,16 @@ function OwnerSettings() {
           </Button>
         } />
         {loading ? (
-          <div className="flex justify-center py-8"><Spinner className="h-5 w-5 text-brand-600" /></div>
+          <div className="flex justify-center py-8"><Spinner className="h-5 w-5 text-brand-600 dark:text-gold-300" /></div>
         ) : allBusinesses.length === 0 ? (
-          <p className="py-6 text-center text-sm text-ink-faint">No businesses configured.</p>
+          <p className="py-6 text-center text-sm text-ink-faint dark:text-cream-400/70">No businesses configured.</p>
         ) : (
           <div className="space-y-3">
             {allBusinesses.map((b) => (
-              <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-100 p-4">
+              <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-100 p-4 dark:border-brand-800">
                 <div>
-                  <p className="font-semibold text-ink">{b.name}</p>
-                  <p className="text-xs text-ink-faint">{b.description || 'No description'} · created {formatDateTime(b.created_at)}</p>
+                  <p className="font-semibold text-ink dark:text-cream-100">{b.name}</p>
+                  <p className="text-xs text-ink-faint dark:text-cream-400/70">{b.description || 'No description'} · created {formatDateTime(b.created_at)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge tone={b.active ? 'green' : 'gray'}>{b.active ? 'Active' : 'Inactive'}</Badge>
@@ -177,15 +177,15 @@ function OwnerSettings() {
         <CardHeader title="Expense categories" subtitle="Categories available when recording expenses. Deactivated categories are hidden from new entries but keep their history." />
         <div className="flex flex-col gap-3">
           {expenseCategories.length === 0 ? (
-            <p className="text-sm text-ink-faint">No expense categories configured.</p>
+            <p className="text-sm text-ink-faint dark:text-cream-400/70">No expense categories configured.</p>
           ) : (
-            <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100">
+            <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100 dark:divide-brand-800 dark:border-brand-800">
               {expenseCategories.map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <Tags className={`h-4 w-4 ${c.active ? 'text-brand-700' : 'text-ink-faint'}`} />
-                    <span className={`text-sm font-medium ${c.active ? 'text-ink' : 'text-ink-faint'}`}>{c.name}</span>
-                    <span className="text-xs text-ink-faint">order {c.sort_order}</span>
+                    <Tags className={`h-4 w-4 ${c.active ? 'text-brand-700 dark:text-gold-300' : 'text-ink-faint dark:text-cream-400/70'}`} />
+                    <span className={`text-sm font-medium ${c.active ? 'text-ink dark:text-cream-100' : 'text-ink-faint dark:text-cream-400/70'}`}>{c.name}</span>
+                    <span className="text-xs text-ink-faint dark:text-cream-400/70">order {c.sort_order}</span>
                   </div>
                   <Button size="sm" variant="ghost" onClick={() => void toggleCategory(c)}>
                     {c.active ? 'Deactivate' : 'Activate'}
@@ -207,17 +207,17 @@ function OwnerSettings() {
         <Card>
           <CardHeader title="Quick links" subtitle="Manage products, users and more." />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <Link to="/products" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50">
-              <div className="rounded-xl bg-brand-100 p-2.5 text-brand-800"><Package className="h-5 w-5" /></div>
-              <div><p className="text-sm font-bold text-brand-950">Products</p><p className="text-xs text-ink-faint">Prices & units</p></div>
+            <Link to="/products" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50 dark:border-brand-800 dark:hover:bg-white/5">
+              <div className="rounded-xl bg-brand-100 p-2.5 text-brand-800 dark:bg-brand-800 dark:text-gold-300"><Package className="h-5 w-5" /></div>
+              <div><p className="text-sm font-bold text-brand-950 dark:text-cream-50">Products</p><p className="text-xs text-ink-faint dark:text-cream-400/70">Prices & units</p></div>
             </Link>
-            <Link to="/users" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50">
-              <div className="rounded-xl bg-gold-100 p-2.5 text-gold-700"><UserPlus className="h-5 w-5" /></div>
-              <div><p className="text-sm font-bold text-brand-950">Users</p><p className="text-xs text-ink-faint">Roles & accounts</p></div>
+            <Link to="/users" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50 dark:border-brand-800 dark:hover:bg-white/5">
+              <div className="rounded-xl bg-gold-100 p-2.5 text-gold-700 dark:bg-gold-500/20 dark:text-gold-300"><UserPlus className="h-5 w-5" /></div>
+              <div><p className="text-sm font-bold text-brand-950 dark:text-cream-50">Users</p><p className="text-xs text-ink-faint dark:text-cream-400/70">Roles & accounts</p></div>
             </Link>
-            <Link to="/activity" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50">
-              <div className="rounded-xl bg-sky-100 p-2.5 text-sky-700"><SettingsIcon className="h-5 w-5" /></div>
-              <div><p className="text-sm font-bold text-brand-950">Activity</p><p className="text-xs text-ink-faint">Audit trail</p></div>
+            <Link to="/activity" className="flex items-center gap-3 rounded-xl border border-brand-100 p-4 transition-colors hover:bg-brand-50 dark:border-brand-800 dark:hover:bg-white/5">
+              <div className="rounded-xl bg-sky-100 p-2.5 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300"><SettingsIcon className="h-5 w-5" /></div>
+              <div><p className="text-sm font-bold text-brand-950 dark:text-cream-50">Activity</p><p className="text-xs text-ink-faint dark:text-cream-400/70">Audit trail</p></div>
             </Link>
           </div>
         </Card>
@@ -231,8 +231,8 @@ function OwnerSettings() {
             </div>
             <Button onClick={() => void saveName()} loading={nameSaving}>Save name</Button>
           </div>
-          <p className="mt-3 text-xs text-ink-faint">
-            Role: <span className="font-semibold text-gold-700">Owner</span> · {profile?.email}
+          <p className="mt-3 text-xs text-ink-faint dark:text-cream-400/70">
+            Role: <span className="font-semibold text-gold-700 dark:text-gold-300">Owner</span> · {profile?.email}
           </p>
         </Card>
       </div>
@@ -298,8 +298,8 @@ function ManagerSettings() {
           </div>
           <Button onClick={() => void save()} loading={saving}>Save name</Button>
         </div>
-        <p className="mt-3 text-xs text-ink-faint">
-          Role: <span className="font-semibold text-brand-800">Manager</span> · {profile?.email}
+        <p className="mt-3 text-xs text-ink-faint dark:text-cream-400/70">
+          Role: <span className="font-semibold text-brand-800 dark:text-cream-100">Manager</span> · {profile?.email}
         </p>
       </Card>
 
@@ -317,27 +317,27 @@ function DeveloperSettings() {
     <div className="animate-fadeUp space-y-6">
       <PageHeader title="Settings" subtitle="Technical/system configuration (Developer)." />
       <Card>
-        <CardHeader title="System configuration" action={<Server className="h-5 w-5 text-brand-700" />} />
-        <p className="text-sm text-ink-soft">
+        <CardHeader title="System configuration" action={<Server className="h-5 w-5 text-brand-700 dark:text-gold-300" />} />
+        <p className="text-sm text-ink-soft dark:text-cream-300">
           Technical diagnostics and system status are available on your dashboard. This application never
           stores or exposes service-role keys, database passwords or secret credentials in the browser.
         </p>
         <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div className="rounded-xl bg-cream-100/70 p-4">
-            <dt className="text-xs font-semibold text-ink-faint">Role</dt>
-            <dd className="font-bold text-brand-950">Developer / System Admin</dd>
+          <div className="rounded-xl bg-cream-100/70 p-4 dark:bg-white/5">
+            <dt className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Role</dt>
+            <dd className="font-bold text-brand-950 dark:text-cream-50">Developer / System Admin</dd>
           </div>
-          <div className="rounded-xl bg-cream-100/70 p-4">
-            <dt className="text-xs font-semibold text-ink-faint">Email</dt>
-            <dd className="truncate font-bold text-brand-950">{profile?.email}</dd>
+          <div className="rounded-xl bg-cream-100/70 p-4 dark:bg-white/5">
+            <dt className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Email</dt>
+            <dd className="truncate font-bold text-brand-950 dark:text-cream-50">{profile?.email}</dd>
           </div>
-          <div className="rounded-xl bg-emerald-50 p-4">
-            <dt className="text-xs font-semibold text-emerald-700">Security boundary</dt>
-            <dd className="text-sm text-emerald-900">No unrestricted financial access. Business financial data is separate from technical permissions.</dd>
+          <div className="rounded-xl bg-emerald-50 p-4 dark:bg-emerald-500/10">
+            <dt className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">Security boundary</dt>
+            <dd className="text-sm text-emerald-900 dark:text-emerald-200">No unrestricted financial access. Business financial data is separate from technical permissions.</dd>
           </div>
-          <div className="rounded-xl bg-cream-100/70 p-4">
-            <dt className="text-xs font-semibold text-ink-faint">Key handling</dt>
-            <dd className="text-sm text-ink-soft">Only the publishable (client) key is used — never a service-role key.</dd>
+          <div className="rounded-xl bg-cream-100/70 p-4 dark:bg-white/5">
+            <dt className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Key handling</dt>
+            <dd className="text-sm text-ink-soft dark:text-cream-300">Only the publishable (client) key is used — never a service-role key.</dd>
           </div>
         </dl>
       </Card>

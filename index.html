@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Masalan Business Enterprise — business management for Masalan Bakery Limited and Masalan Water Factory" />
     <title>Masalan Business Enterprise</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('masalan-theme')
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          if (theme === 'dark') document.documentElement.classList.add('dark')
+        } catch (e) {}
+      })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

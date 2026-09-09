@@ -2,6 +2,7 @@ import { Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { SidebarContent } from './Sidebar'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { cn } from '../../lib/utils'
 
 export function AppLayout() {
@@ -13,7 +14,7 @@ export function AppLayout() {
   }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-cream-100">
+    <div className="min-h-screen bg-cream-100 dark:bg-brand-950">
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 lg:block">
         <SidebarContent />
@@ -49,11 +50,11 @@ export function AppLayout() {
       </div>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-brand-100 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-brand-100 bg-white/90 px-4 py-3 backdrop-blur lg:hidden dark:border-brand-800 dark:bg-brand-950/90">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="rounded-lg border border-brand-200 p-2 text-brand-800"
+          className="rounded-lg border border-brand-200 p-2 text-brand-800 dark:border-brand-700 dark:text-cream-100"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
@@ -62,7 +63,10 @@ export function AppLayout() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 font-display text-sm font-bold text-brand-950">
             M
           </div>
-          <span className="font-display text-sm font-bold text-brand-950">Masalan Business</span>
+          <span className="font-display text-sm font-bold text-brand-950 dark:text-cream-50">Masalan Business</span>
+        </div>
+        <div className="ml-auto">
+          <ThemeToggle variant="dark" />
         </div>
       </header>
 

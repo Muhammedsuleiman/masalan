@@ -8,10 +8,10 @@ import {
   YAxis,
 } from 'recharts'
 import type { DayPoint } from '../../services/reportService'
-
-const AXIS_STYLE = { fontSize: 11, fill: '#95806f' }
+import { useChartColors } from '../../lib/chartTheme'
 
 export function RevenueTrendChart({ data }: { data: DayPoint[] }) {
+  const c = useChartColors()
   if (data.length === 0) return null
   return (
     <ResponsiveContainer width="100%" height={260}>
@@ -26,15 +26,16 @@ export function RevenueTrendChart({ data }: { data: DayPoint[] }) {
             <stop offset="100%" stopColor="#d4af37" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f3ede0" vertical={false} />
-        <XAxis dataKey="label" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: '#e9dfc9' }} />
-        <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={c.grid} vertical={false} />
+        <XAxis dataKey="label" tick={c.tick} stroke={c.axis} tickLine={false} axisLine={{ stroke: c.axisLine }} />
+        <YAxis tick={c.tick} stroke={c.axis} tickLine={false} axisLine={false} />
         <Tooltip
           contentStyle={{
+            backgroundColor: c.tooltipBg,
             borderRadius: 12,
-            border: '1px solid #f3ede0',
+            border: `1px solid ${c.tooltipBorder}`,
             fontSize: 12,
-            boxShadow: '0 8px 24px rgba(61,44,34,0.08)',
+            boxShadow: c.tooltipShadow,
           }}
           formatter={(value) => `₦${Number(value).toLocaleString('en-NG')}`}
         />

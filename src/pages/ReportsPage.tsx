@@ -153,13 +153,13 @@ export default function ReportsPage() {
                 <CardHeader title="Product quantities" subtitle="Units sold in this period" />
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {Object.entries(stats.productQuantities).map(([name, v]) => (
-                    <div key={name} className="flex items-center gap-3 rounded-xl bg-cream-100/70 p-4">
-                      <div className="rounded-xl bg-brand-100 p-2.5 text-brand-800">
+                    <div key={name} className="flex items-center gap-3 rounded-xl bg-cream-100/70 p-4 dark:bg-white/5">
+                      <div className="rounded-xl bg-brand-100 p-2.5 text-brand-800 dark:bg-brand-800 dark:text-gold-300">
                         <Package className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-brand-950">{name}</p>
-                        <p className="text-xs text-ink-faint">
+                        <p className="text-sm font-bold text-brand-950 dark:text-cream-50">{name}</p>
+                        <p className="text-xs text-ink-faint dark:text-cream-400/70">
                           {Number.isInteger(v.quantity) ? v.quantity : v.quantity.toFixed(2)} {v.unit}s
                         </p>
                       </div>
@@ -208,12 +208,12 @@ export default function ReportsPage() {
                     <tbody>
                       {salesSorted.slice(0, 100).map((s) => (
                         <tr key={s.id}>
-                          <td className="whitespace-nowrap text-ink-soft">{formatDateTime(s.sale_date)}</td>
-                          <td className="font-semibold text-ink">{s.customer?.name ?? '—'}</td>
-                          <td className="text-ink-soft">{names.get(s.business_id) ?? '—'}</td>
+                          <td className="whitespace-nowrap text-ink-soft dark:text-cream-300">{formatDateTime(s.sale_date)}</td>
+                          <td className="font-semibold text-ink dark:text-cream-100">{s.customer?.name ?? '—'}</td>
+                          <td className="text-ink-soft dark:text-cream-300">{names.get(s.business_id) ?? '—'}</td>
                           <td className="!text-right font-semibold">{formatNaira(s.total_amount)}</td>
-                          <td className="!text-right text-emerald-700">{formatNaira(s.amount_paid)}</td>
-                          <td className="!text-right text-red-600">{formatNaira(s.amount_outstanding)}</td>
+                          <td className="!text-right text-emerald-700 dark:text-emerald-400">{formatNaira(s.amount_paid)}</td>
+                          <td className="!text-right text-red-600 dark:text-red-400">{formatNaira(s.amount_outstanding)}</td>
                           <td><PaymentStatusBadge status={s.payment_status} /></td>
                         </tr>
                       ))}

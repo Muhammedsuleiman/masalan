@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-cream-50">
+    <div className="flex min-h-screen bg-cream-50 dark:bg-brand-950">
       <div className="hidden w-1/2 overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 lg:flex lg:flex-col lg:justify-between">
         <div className="relative p-12">
           <div className="flex items-center gap-3">
@@ -53,8 +53,8 @@ export default function ForgotPasswordPage() {
               M
             </div>
             <div>
-              <p className="font-display text-base font-bold text-brand-950">Masalan</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600">
+              <p className="font-display text-base font-bold text-brand-950 dark:text-cream-100">Masalan</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600 dark:text-gold-400">
                 Business Enterprise
               </p>
             </div>
@@ -69,21 +69,21 @@ export default function ForgotPasswordPage() {
 
           {sent ? (
             <div className="space-y-4">
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-white">
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="font-display text-lg font-bold text-brand-950">Check your inbox</h2>
-                    <p className="text-sm text-ink-soft">
-                      If an account exists for <span className="font-semibold text-ink">{email}</span>, a password reset
+                    <h2 className="font-display text-lg font-bold text-brand-950 dark:text-cream-50">Check your inbox</h2>
+                    <p className="text-sm text-ink-soft dark:text-cream-300">
+                      If an account exists for <span className="font-semibold text-ink dark:text-cream-100">{email}</span>, a password reset
                       link has been sent. Follow the link to choose a new password.
                     </p>
                   </div>
                 </div>
               </div>
-              <Link to="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-900">
+              <Link to="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-gold-300 dark:hover:text-gold-400">
                 <ArrowLeft className="h-4 w-4" /> Back to sign in
               </Link>
             </div>
@@ -91,10 +91,10 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="mb-6">
                 <div className="flex items-center gap-2">
-                  <KeyRound className="h-5 w-5 text-gold-600" />
-                  <h2 className="font-display text-2xl font-bold text-brand-950">Reset your password</h2>
+                  <KeyRound className="h-5 w-5 text-gold-600 dark:text-gold-400" />
+                  <h2 className="font-display text-2xl font-bold text-brand-950 dark:text-cream-50">Reset your password</h2>
                 </div>
-                <p className="mt-1 text-sm text-ink-soft">
+                <p className="mt-1 text-sm text-ink-soft dark:text-cream-300">
                   Enter your account email and we'll send you a link to set a new password.
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
                   Email address
                 </label>
                 <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
                   <input
                     id="email"
                     type="email"
@@ -129,15 +129,15 @@ export default function ForgotPasswordPage() {
                 )}
               </button>
 
-              <Link to="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-900">
+              <Link to="/login" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-gold-300 dark:hover:text-gold-400">
                 <ArrowLeft className="h-4 w-4" /> Back to sign in
               </Link>
             </form>
           )}
 
-          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4">
-            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700">
-              <Landmark className="h-4 w-4 text-gold-600" /> Authorized personnel only
+          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4 dark:border-brand-700 dark:bg-brand-900">
+            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700 dark:text-gold-300">
+              <Landmark className="h-4 w-4 text-gold-600 dark:text-gold-400" /> Authorized personnel only
             </p>
           </div>
         </div>

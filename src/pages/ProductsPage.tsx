@@ -184,9 +184,9 @@ export default function ProductsPage() {
       </Alert>
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center dark:border-brand-800">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search products…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={businessFilter} onChange={(e) => setBusinessFilter(e.target.value)}>
@@ -205,7 +205,7 @@ export default function ProductsPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : visible.length === 0 ? (
@@ -234,35 +234,35 @@ export default function ProductsPage() {
                     const low = stock ? stock.reorder_level > 0 && stock.available <= stock.reorder_level : false
                     return (
                     <tr key={p.id}>
-                      <td className="font-semibold text-ink">
+                      <td className="font-semibold text-ink dark:text-cream-100">
                         {p.name}
-                        {p.description && <p className="max-w-[200px] truncate text-xs text-ink-faint">{p.description}</p>}
+                        {p.description && <p className="max-w-[200px] truncate text-xs text-ink-faint dark:text-cream-400/70">{p.description}</p>}
                       </td>
-                      <td className="text-ink-soft">{p.business_name ?? '—'}</td>
-                      <td className="text-ink-soft">{p.category ?? '—'}</td>
-                      <td className="!text-right font-bold text-brand-950">{formatNaira(p.price)}</td>
-                      <td className="!text-right text-ink-soft">{p.cost_price !== null ? formatNaira(p.cost_price) : '—'}</td>
-                      <td className="text-ink-soft">{p.unit}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{p.business_name ?? '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{p.category ?? '—'}</td>
+                      <td className="!text-right font-bold text-brand-950 dark:text-cream-50">{formatNaira(p.price)}</td>
+                      <td className="!text-right text-ink-soft dark:text-cream-300">{p.cost_price !== null ? formatNaira(p.cost_price) : '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{p.unit}</td>
                       <td className="!text-right">
-                        <span className={`font-semibold ${low ? 'text-red-600' : available > 0 ? 'text-emerald-700' : 'text-ink-faint'}`}>
+                        <span className={`font-semibold ${low ? 'text-red-600 dark:text-red-400' : available > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-ink-faint dark:text-cream-400/70'}`}>
                           {formatQuantity(available)}
                         </span>
                         {low && <AlertTriangle className="ml-1 inline h-3.5 w-3.5 text-red-500" aria-label="Low stock" />}
                       </td>
-                      <td className="!text-right text-ink-soft">{p.reorder_level > 0 ? formatQuantity(p.reorder_level) : '—'}</td>
+                      <td className="!text-right text-ink-soft dark:text-cream-300">{p.reorder_level > 0 ? formatQuantity(p.reorder_level) : '—'}</td>
                       <td>
                         <Badge tone={p.active ? 'green' : 'gray'}>{p.active ? 'Available' : 'Unavailable'}</Badge>
                       </td>
                       {isOwner && (
                         <td>
                           <div className="flex items-center justify-end gap-1">
-                            <button type="button" onClick={() => openEdit(p)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="Edit product">
+                            <button type="button" onClick={() => openEdit(p)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10" aria-label="Edit product">
                               <Pencil className="h-4 w-4" />
                             </button>
                             <button
                               type="button"
                               onClick={() => void toggleActive(p)}
-                              className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-brand-50"
+                              className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-brand-50 dark:text-cream-400/70 dark:hover:bg-white/10"
                               aria-label={p.active ? 'Mark unavailable' : 'Restore product'}
                               title={p.active ? 'Mark unavailable' : 'Restore product'}
                             >

@@ -19,12 +19,12 @@ interface StatCardProps {
 }
 
 const toneIcon: Record<Tone, string> = {
-  brown: 'bg-brand-100 text-brand-800',
-  gold: 'bg-gold-100 text-gold-700',
-  green: 'bg-emerald-100 text-emerald-700',
-  red: 'bg-red-100 text-red-700',
-  blue: 'bg-sky-100 text-sky-700',
-  cream: 'bg-cream-200 text-brand-700',
+  brown: 'bg-brand-100 text-brand-800 dark:bg-brand-700/40 dark:text-gold-300',
+  gold: 'bg-gold-100 text-gold-700 dark:bg-gold-500/20 dark:text-gold-300',
+  green: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300',
+  red: 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300',
+  blue: 'bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300',
+  cream: 'bg-cream-200 text-brand-700 dark:bg-cream-500/20 dark:text-cream-200',
 }
 
 const tonePanel: Record<Tone, string> = {
@@ -65,17 +65,17 @@ export function StatCard({ label, value, icon: Icon, tone = 'brown', sub, loadin
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={cn('text-xs font-semibold uppercase tracking-wide', colorful ? toneLabel[tone] : 'text-ink-faint')}>
+          <p className={cn('text-xs font-semibold uppercase tracking-wide', colorful ? toneLabel[tone] : 'text-ink-faint dark:text-cream-400/70')}>
             {label}
           </p>
           {loading ? (
             <div className="mt-2 h-7 w-24 animate-pulse rounded-md bg-white/15" />
           ) : (
-            <p className={cn('mt-1 truncate text-2xl font-extrabold tracking-tight', colorful ? 'text-cream-50' : 'text-brand-950')}>
+            <p className={cn('mt-1 truncate text-2xl font-extrabold tracking-tight', colorful ? 'text-cream-50' : 'text-brand-950 dark:text-cream-50')}>
               {value}
             </p>
           )}
-          {sub && <p className={cn('mt-1 text-xs', colorful ? 'text-cream-200/60' : 'text-ink-soft')}>{sub}</p>}
+          {sub && <p className={cn('mt-1 text-xs', colorful ? 'text-cream-200/60' : 'text-ink-soft dark:text-cream-300')}>{sub}</p>}
         </div>
         <div className={cn('shrink-0 rounded-xl p-2.5', colorful ? toneChip[tone] : toneIcon[tone])}>
           <Icon className="h-5 w-5" />

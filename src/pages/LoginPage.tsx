@@ -4,6 +4,7 @@ import { Lock, Mail, Loader2, Landmark, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { getMfaStatus, verifyTotp } from '../services/authService'
 import { Alert } from '../components/ui/Alert'
+import { ThemeToggle } from '../components/ui/ThemeToggle'
 import { isConfigValid } from '../lib/supabase'
 
 export default function LoginPage() {
@@ -105,7 +106,7 @@ export default function LoginPage() {
           Email address
         </label>
         <div className="relative">
-          <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+          <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
           <input
             id="email"
             type="email"
@@ -123,7 +124,7 @@ export default function LoginPage() {
           Password
         </label>
         <div className="relative">
-          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
           <input
             id="password"
             type="password"
@@ -137,7 +138,7 @@ export default function LoginPage() {
       </div>
 
       <div className="flex justify-end">
-        <Link to="/forgot-password" className="text-sm font-semibold text-brand-700 hover:text-brand-900">
+        <Link to="/forgot-password" className="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-gold-300 dark:hover:text-gold-400">
           Forgot password?
         </Link>
       </div>
@@ -156,11 +157,11 @@ export default function LoginPage() {
 
   const renderMfa = () => (
     <form onSubmit={handleVerify} className="space-y-4">
-      <div className="rounded-2xl bg-emerald-50/60 p-4">
-        <p className="flex items-center gap-2 text-sm font-bold text-emerald-800">
+      <div className="rounded-2xl bg-emerald-50/60 p-4 dark:bg-emerald-500/10">
+        <p className="flex items-center gap-2 text-sm font-bold text-emerald-800 dark:text-emerald-300">
           <ShieldCheck className="h-4 w-4" /> Two-step verification
         </p>
-        <p className="mt-1 text-sm text-ink-soft">
+        <p className="mt-1 text-sm text-ink-soft dark:text-cream-300">
           This account is protected with an authenticator app. Enter the 6-digit code to continue.
         </p>
       </div>
@@ -197,14 +198,17 @@ export default function LoginPage() {
         )}
       </button>
 
-      <button type="button" onClick={() => void handleCancelMfa()} className="w-full py-2 text-sm font-semibold text-ink-faint hover:text-brand-700">
+      <button type="button" onClick={() => void handleCancelMfa()} className="w-full py-2 text-sm font-semibold text-ink-faint hover:text-brand-700 dark:text-cream-400/70 dark:hover:text-gold-300">
         Use a different account
       </button>
     </form>
   )
 
   return (
-    <div className="flex min-h-screen bg-cream-50">
+    <div className="flex min-h-screen bg-cream-50 dark:bg-brand-950">
+      <div className="absolute right-4 top-4 z-20">
+        <ThemeToggle />
+      </div>
       {/* Brand panel */}
       <div className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 lg:flex lg:flex-col lg:justify-between">
         <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-gold-500/10 blur-3xl" />
@@ -251,25 +255,25 @@ export default function LoginPage() {
               M
             </div>
             <div>
-              <p className="font-display text-base font-bold text-brand-950">Masalan</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600">
+              <p className="font-display text-base font-bold text-brand-950 dark:text-cream-100">Masalan</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600 dark:text-gold-400">
                 Business Enterprise
               </p>
             </div>
           </div>
 
           <div className="mb-6">
-            <h2 className="font-display text-2xl font-bold text-brand-950">Welcome back</h2>
-            <p className="mt-1 text-sm text-ink-soft">
+            <h2 className="font-display text-2xl font-bold text-brand-950 dark:text-cream-50">Welcome back</h2>
+            <p className="mt-1 text-sm text-ink-soft dark:text-cream-300">
               {mfaActive ? 'Finish signing in' : 'Sign in to continue to your dashboard.'}
             </p>
           </div>
 
           {mfaActive ? renderMfa() : renderForm()}
 
-          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4">
-            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700">
-              <Landmark className="h-4 w-4 text-gold-600" /> Authorized personnel only
+          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4 dark:border-brand-700 dark:bg-brand-900">
+            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700 dark:text-gold-300">
+              <Landmark className="h-4 w-4 text-gold-600 dark:text-gold-400" /> Authorized personnel only
             </p>
           </div>
         </div>

@@ -132,7 +132,7 @@ export function CustomerForm({
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-ink-faint">* required</p>
+        <p className="text-xs text-ink-faint dark:text-cream-400/70">* required</p>
         <button type="submit" className="btn-primary" disabled={submitting || !values.name.trim()}>
           {submitting ? 'Saving…' : 'Save customer'}
         </button>

@@ -83,9 +83,9 @@ export default function CreditPage() {
       </div>
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 dark:border-brand-800 p-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search by customer…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={businessId} onChange={(e) => setBusinessId(e.target.value)}>
@@ -98,14 +98,14 @@ export default function CreditPage() {
             <button
               type="button"
               onClick={() => setViewMode('customers')}
-              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'customers' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100'}`}
+              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'customers' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100 dark:bg-brand-800 dark:text-cream-300'}`}
             >
               By customer
             </button>
             <button
               type="button"
               onClick={() => setViewMode('sales')}
-              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'sales' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100'}`}
+              className={`px-3 py-2 text-xs font-semibold transition-colors ${viewMode === 'sales' ? 'bg-brand-900 text-cream-50' : 'bg-white text-ink-soft hover:bg-cream-100 dark:bg-brand-800 dark:text-cream-300'}`}
             >
               By sale
             </button>
@@ -115,7 +115,7 @@ export default function CreditPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : viewMode === 'customers' ? (
@@ -140,10 +140,10 @@ export default function CreditPage() {
                   <tbody>
                     {visibleCustomers.map((c) => (
                       <tr key={c.customer_id}>
-                        <td className="font-semibold text-ink">{c.customer_name}</td>
-                        <td className="text-ink-soft">{c.customer_phone || '—'}</td>
-                        <td className="!text-right text-ink-soft">{c.open_sale_count}</td>
-                        <td className="!text-right font-bold text-red-600">{formatNaira(c.total_outstanding)}</td>
+                        <td className="font-semibold text-ink dark:text-cream-100">{c.customer_name}</td>
+                        <td className="text-ink-soft dark:text-cream-300">{c.customer_phone || '—'}</td>
+                        <td className="!text-right text-ink-soft dark:text-cream-300">{c.open_sale_count}</td>
+                        <td className="!text-right font-bold text-red-600 dark:text-red-400">{formatNaira(c.total_outstanding)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -177,19 +177,19 @@ export default function CreditPage() {
                 <tbody>
                   {visible.map((sale) => (
                     <tr key={sale.id}>
-                      <td className="font-semibold text-ink">{sale.customer?.name ?? '—'}</td>
-                      <td className="text-ink-soft">{sale.business?.name ?? '—'}</td>
-                      <td className="whitespace-nowrap text-ink-soft">{formatDate(sale.sale_date)}</td>
+                      <td className="font-semibold text-ink dark:text-cream-100">{sale.customer?.name ?? '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{sale.business?.name ?? '—'}</td>
+                      <td className="whitespace-nowrap text-ink-soft dark:text-cream-300">{formatDate(sale.sale_date)}</td>
                       <td className="!text-right font-semibold">{formatNaira(sale.total_amount)}</td>
-                      <td className="!text-right text-emerald-700">{formatNaira(sale.amount_paid)}</td>
-                      <td className="!text-right font-bold text-red-600">{formatNaira(sale.amount_outstanding)}</td>
+                      <td className="!text-right text-emerald-700 dark:text-emerald-400">{formatNaira(sale.amount_paid)}</td>
+                      <td className="!text-right font-bold text-red-600 dark:text-red-400">{formatNaira(sale.amount_outstanding)}</td>
                       <td><PaymentStatusBadge status={sale.payment_status} /></td>
                       <td>
                         <div className="flex items-center justify-end gap-1">
                           <button
                             type="button"
                             onClick={() => setDetailSaleId(sale.id)}
-                            className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50"
+                            className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10"
                             aria-label="View credit sale"
                           >
                             <Eye className="h-4 w-4" />

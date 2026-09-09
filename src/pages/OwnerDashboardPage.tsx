@@ -211,7 +211,7 @@ export default function OwnerDashboardPage() {
                 key: s.id,
                 title: s.customer?.name ?? 'Customer',
                 detail: names.get(s.business_id) ?? '',
-                right: <span className="font-semibold text-brand-950">{formatNaira(s.total_amount)}</span>,
+                right: <span className="font-semibold text-brand-950 dark:text-cream-50">{formatNaira(s.total_amount)}</span>,
                 badge: <PaymentStatusBadge status={s.payment_status} />,
                 time: formatDateTime(s.sale_date),
               }))}
@@ -224,7 +224,7 @@ export default function OwnerDashboardPage() {
                 key: p.id,
                 title: p.payment_method === 'cash' ? 'Cash payment' : 'Bank transfer',
                 detail: p.sale?.customer?.name ?? 'Sale payment',
-                right: <span className="font-semibold text-emerald-700">{formatNaira(p.amount)}</span>,
+                right: <span className="font-semibold text-emerald-700 dark:text-emerald-400">{formatNaira(p.amount)}</span>,
                 time: formatDateTime(p.payment_date),
               }))}
             />
@@ -236,7 +236,7 @@ export default function OwnerDashboardPage() {
                 key: e.id,
                 title: e.category,
                 detail: e.description,
-                right: <span className="font-semibold text-red-600">−{formatNaira(e.amount)}</span>,
+                right: <span className="font-semibold text-red-600 dark:text-red-400">−{formatNaira(e.amount)}</span>,
                 time: formatDateTime(e.expense_date),
               }))}
             />
@@ -314,23 +314,23 @@ function RecentCard({
       <CardHeader
         title={title}
         action={
-          <div className="rounded-lg bg-cream-100 p-2 text-brand-700">
+          <div className="rounded-lg bg-cream-100 p-2 text-brand-700 dark:bg-brand-800 dark:text-gold-300">
             <Icon className="h-4 w-4" />
           </div>
         }
       />
       {rows.length === 0 ? (
-        <p className="py-6 text-center text-sm text-ink-faint">{empty}</p>
+        <p className="py-6 text-center text-sm text-ink-faint dark:text-cream-400/70">{empty}</p>
       ) : (
-        <ul className="divide-y divide-brand-50">
+        <ul className="divide-y divide-brand-50 dark:divide-brand-800">
           {rows.map((r) => (
             <li key={r.key} className="flex items-center justify-between gap-3 py-2.5">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-sm font-semibold text-ink">{r.title}</p>
+                  <p className="truncate text-sm font-semibold text-ink dark:text-cream-100">{r.title}</p>
                   {r.badge}
                 </div>
-                <p className="truncate text-xs text-ink-faint">{r.detail} · {r.time}</p>
+                <p className="truncate text-xs text-ink-faint dark:text-cream-400/70">{r.detail} · {r.time}</p>
               </div>
               <div className="shrink-0 text-right">{r.right}</div>
             </li>

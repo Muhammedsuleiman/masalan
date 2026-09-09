@@ -115,7 +115,7 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
             <InfoCell label="Worker" value={sale.staff?.name ?? '—'} />
           </div>
 
-          <div className="table-wrap rounded-xl border border-brand-100">
+          <div className="table-wrap rounded-xl border border-brand-100 dark:border-brand-800">
             <table className="table">
               <thead>
                 <tr>
@@ -138,40 +138,40 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
             </table>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-xl bg-cream-100/70 p-4 text-center">
+          <div className="grid grid-cols-3 gap-3 rounded-xl bg-cream-100/70 p-4 text-center dark:bg-white/5">
             <div>
-              <p className="text-xs font-semibold text-ink-faint">Total</p>
-              <p className="text-lg font-extrabold text-brand-950">{formatNaira(sale.total_amount)}</p>
+              <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Total</p>
+              <p className="text-lg font-extrabold text-brand-950 dark:text-cream-50">{formatNaira(sale.total_amount)}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold text-ink-faint">Paid</p>
-              <p className="text-lg font-extrabold text-emerald-700">{formatNaira(sale.amount_paid)}</p>
+              <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Paid</p>
+              <p className="text-lg font-extrabold text-emerald-700 dark:text-emerald-400">{formatNaira(sale.amount_paid)}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold text-ink-faint">Outstanding</p>
-              <p className="text-lg font-extrabold text-red-600">{formatNaira(sale.amount_outstanding)}</p>
+              <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Outstanding</p>
+              <p className="text-lg font-extrabold text-red-600 dark:text-red-400">{formatNaira(sale.amount_outstanding)}</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Payment status</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-faint dark:text-cream-400/70">Payment status</span>
             <PaymentStatusBadge status={sale.payment_status} />
           </div>
 
           {/* Payment history */}
           <div>
-            <h4 className="mb-2 text-sm font-bold text-brand-900">Payment history</h4>
+            <h4 className="mb-2 text-sm font-bold text-brand-900 dark:text-cream-100">Payment history</h4>
             {payments.length === 0 ? (
-              <p className="text-sm text-ink-faint">No payments recorded for this sale yet.</p>
+              <p className="text-sm text-ink-faint dark:text-cream-400/70">No payments recorded for this sale yet.</p>
             ) : (
-              <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100">
+              <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100 dark:divide-brand-800 dark:border-brand-800">
                 {payments.map((p) => (
                   <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
                     <div>
-                      <p className="text-sm font-semibold text-ink">
+                      <p className="text-sm font-semibold text-ink dark:text-cream-100">
                         {p.payment_method === 'cash' ? 'Cash' : 'Bank transfer'} — {formatNaira(p.amount)}
                       </p>
-                      <p className="text-xs text-ink-faint">
+                      <p className="text-xs text-ink-faint dark:text-cream-400/70">
                         {formatDateTime(p.payment_date)} {p.recorder?.full_name ? `· ${p.recorder.full_name}` : ''}
                       </p>
                     </div>
@@ -183,8 +183,8 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
           </div>
 
           {payOpen && sale.amount_outstanding > 0 && (
-            <div className="rounded-xl border border-gold-200 bg-gold-50/60 p-4 space-y-3">
-              <h4 className="text-sm font-bold text-gold-800">
+            <div className="rounded-xl border border-gold-200 bg-gold-50/60 p-4 space-y-3 dark:border-gold-500/30 dark:bg-gold-500/10">
+              <h4 className="text-sm font-bold text-gold-800 dark:text-gold-300">
                 Record payment — outstanding {formatNaira(sale.amount_outstanding)}
               </h4>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -217,7 +217,7 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
           )}
         </div>
       ) : (
-        <p className="py-8 text-center text-sm text-ink-faint">Sale not found or no longer available.</p>
+        <p className="py-8 text-center text-sm text-ink-faint dark:text-cream-400/70">Sale not found or no longer available.</p>
       )}
     </Modal>
   )
@@ -225,9 +225,9 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
 
 function InfoCell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-cream-100/70 p-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">{label}</p>
-      <p className="mt-0.5 truncate text-sm font-bold text-brand-950">{value}</p>
+    <div className="rounded-xl bg-cream-100/70 p-3 dark:bg-white/5">
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint dark:text-cream-400/70">{label}</p>
+      <p className="mt-0.5 truncate text-sm font-bold text-brand-950 dark:text-cream-50">{value}</p>
     </div>
   )
 }

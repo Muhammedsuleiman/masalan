@@ -58,7 +58,7 @@ export function FilterBar({ businesses, filters, onChange, showBusiness = true, 
       )}
 
       <div className="relative">
-        <CalendarRange className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+        <CalendarRange className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
         <select
           className={cn(selectClass, 'w-auto pl-9')}
           value={filters.period}
@@ -92,7 +92,7 @@ export function FilterBar({ businesses, filters, onChange, showBusiness = true, 
             onChange={(e) => onChange({ ...filters, customFrom: e.target.value })}
             aria-label="From date"
           />
-          <span className="text-ink-faint">to</span>
+          <span className="text-ink-faint dark:text-cream-400/50">to</span>
           <input
             type="date"
             className="input !w-auto !py-2"

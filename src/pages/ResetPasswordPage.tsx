@@ -73,14 +73,14 @@ export default function ResetPasswordPage() {
 
   if (checking) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream-50">
+      <div className="flex min-h-screen items-center justify-center bg-cream-50 dark:bg-brand-950">
         <Spinner className="h-6 w-6 text-brand-600" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen bg-cream-50">
+    <div className="flex min-h-screen bg-cream-50 dark:bg-brand-950">
       <div className="hidden w-1/2 overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 lg:flex lg:flex-col lg:justify-between">
         <div className="relative p-12">
           <div className="flex items-center gap-3">
@@ -104,8 +104,8 @@ export default function ResetPasswordPage() {
               M
             </div>
             <div>
-              <p className="font-display text-base font-bold text-brand-950">Masalan</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600">
+              <p className="font-display text-base font-bold text-brand-950 dark:text-cream-100">Masalan</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-600 dark:text-gold-400">
                 Business Enterprise
               </p>
             </div>
@@ -113,14 +113,14 @@ export default function ResetPasswordPage() {
 
           {done ? (
             <div className="space-y-4">
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-white">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="font-display text-lg font-bold text-brand-950">Password updated</h2>
-                    <p className="text-sm text-ink-soft">
+                    <h2 className="font-display text-lg font-bold text-brand-950 dark:text-cream-50">Password updated</h2>
+                    <p className="text-sm text-ink-soft dark:text-cream-300">
                       Your password has been changed. Redirecting you to sign in…
                     </p>
                   </div>
@@ -140,10 +140,10 @@ export default function ResetPasswordPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="mb-6">
                 <div className="flex items-center gap-2">
-                  <KeyRound className="h-5 w-5 text-gold-600" />
-                  <h2 className="font-display text-2xl font-bold text-brand-950">Choose a new password</h2>
+                  <KeyRound className="h-5 w-5 text-gold-600 dark:text-gold-400" />
+                  <h2 className="font-display text-2xl font-bold text-brand-950 dark:text-cream-50">Choose a new password</h2>
                 </div>
-                <p className="mt-1 text-sm text-ink-soft">
+                <p className="mt-1 text-sm text-ink-soft dark:text-cream-300">
                   Your identity has been verified. Set a new password to continue.
                 </p>
               </div>
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
                   New password
                 </label>
                 <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
                   <input
                     id="password"
                     type="password"
@@ -173,7 +173,7 @@ export default function ResetPasswordPage() {
                   Confirm new password
                 </label>
                 <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
                   <input
                     id="confirm"
                     type="password"
@@ -198,9 +198,9 @@ export default function ResetPasswordPage() {
             </form>
           )}
 
-          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4">
-            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700">
-              <Landmark className="h-4 w-4 text-gold-600" /> Authorized personnel only
+          <div className="mt-8 rounded-xl border border-brand-100 bg-white p-4 dark:border-brand-700 dark:bg-brand-900">
+            <p className="flex items-center gap-2 text-xs font-semibold text-brand-700 dark:text-gold-300">
+              <Landmark className="h-4 w-4 text-gold-600 dark:text-gold-400" /> Authorized personnel only
             </p>
           </div>
         </div>

@@ -184,9 +184,9 @@ export default function CustomersPage() {
       )}
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 dark:border-brand-800 p-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search by name, business or phone…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
@@ -199,7 +199,7 @@ export default function CustomersPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : customers.length === 0 ? (
@@ -229,20 +229,20 @@ export default function CustomersPage() {
                 <tbody>
                   {visible.map((c) => (
                     <tr key={c.id}>
-                      <td className="font-semibold text-ink">{c.name}</td>
+                      <td className="font-semibold text-ink dark:text-cream-100">{c.name}</td>
                       <td><Badge tone={c.customer_type === 'business' ? 'gold' : 'gray'}>{c.customer_type}</Badge></td>
-                      <td className="text-ink-soft">{c.business_name || '—'}</td>
-                      <td className="text-ink-soft">{c.phone || '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{c.business_name || '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{c.phone || '—'}</td>
                       <td>
                         <div className="flex items-center justify-end gap-1">
-                          <button type="button" onClick={() => void viewCustomerDetail(c)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="View customer">
+                          <button type="button" onClick={() => void viewCustomerDetail(c)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10" aria-label="View customer">
                             <Eye className="h-4 w-4" />
                           </button>
-                          <button type="button" onClick={() => openEdit(c)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50" aria-label="Edit customer">
+                          <button type="button" onClick={() => openEdit(c)} className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-gold-300 dark:hover:bg-white/10" aria-label="Edit customer">
                             <Pencil className="h-4 w-4" />
                           </button>
                           {isOwner && (
-                            <button type="button" onClick={() => setDeleteTarget(c)} className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600" aria-label="Delete customer">
+                            <button type="button" onClick={() => setDeleteTarget(c)} className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600 dark:text-cream-400/70 dark:hover:bg-red-500/15 dark:hover:text-red-400" aria-label="Delete customer">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           )}
@@ -291,26 +291,26 @@ export default function CustomersPage() {
         ) : viewCustomer ? (
           <div className="space-y-5">
             <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-xl bg-cream-100/70 p-3 text-center">
-                <p className="text-xs font-semibold text-ink-faint">Sales</p>
-                <p className="text-xl font-extrabold text-brand-950">{viewSales.length}</p>
+              <div className="rounded-xl bg-cream-100/70 p-3 text-center dark:bg-white/5">
+                <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Sales</p>
+                <p className="text-xl font-extrabold text-brand-950 dark:text-cream-50">{viewSales.length}</p>
               </div>
-              <div className="rounded-xl bg-cream-100/70 p-3 text-center">
-                <p className="text-xs font-semibold text-ink-faint">Payments</p>
-                <p className="text-xl font-extrabold text-brand-950">{viewPayments.length}</p>
+              <div className="rounded-xl bg-cream-100/70 p-3 text-center dark:bg-white/5">
+                <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Payments</p>
+                <p className="text-xl font-extrabold text-brand-950 dark:text-cream-50">{viewPayments.length}</p>
               </div>
               <div className="rounded-xl bg-red-50 p-3 text-center">
                 <p className="text-xs font-semibold text-red-400">Outstanding</p>
-                <p className="text-xl font-extrabold text-red-600">{formatNaira(totalOutstanding)}</p>
+                <p className="text-xl font-extrabold text-red-600 dark:text-red-400">{formatNaira(totalOutstanding)}</p>
               </div>
             </div>
 
             <div>
-              <h4 className="mb-2 text-sm font-bold text-brand-900">Sales history</h4>
+              <h4 className="mb-2 text-sm font-bold text-brand-900 dark:text-cream-100">Sales history</h4>
               {viewSales.length === 0 ? (
-                <p className="text-sm text-ink-faint">No sales for this customer yet.</p>
+                <p className="text-sm text-ink-faint dark:text-cream-400/70">No sales for this customer yet.</p>
               ) : (
-                <div className="table-wrap rounded-xl border border-brand-100">
+                <div className="table-wrap rounded-xl border border-brand-100 dark:border-brand-800">
                   <table className="table">
                     <thead>
                       <tr>
@@ -323,9 +323,9 @@ export default function CustomersPage() {
                     <tbody>
                       {viewSales.slice(0, 8).map((s) => (
                         <tr key={s.id}>
-                          <td className="text-ink-soft">{formatDateTime(s.sale_date)}</td>
+                          <td className="text-ink-soft dark:text-cream-300">{formatDateTime(s.sale_date)}</td>
                           <td className="!text-right font-semibold">{formatNaira(s.total_amount)}</td>
-                          <td className="!text-right text-red-600">{formatNaira(s.amount_outstanding)}</td>
+                          <td className="!text-right text-red-600 dark:text-red-400">{formatNaira(s.amount_outstanding)}</td>
                           <td><PaymentStatusBadge status={s.payment_status} /></td>
                         </tr>
                       ))}
@@ -336,17 +336,17 @@ export default function CustomersPage() {
             </div>
 
             <div>
-              <h4 className="mb-2 text-sm font-bold text-brand-900">Payment history</h4>
+              <h4 className="mb-2 text-sm font-bold text-brand-900 dark:text-cream-100">Payment history</h4>
               {viewPayments.length === 0 ? (
-                <p className="text-sm text-ink-faint">No payments for this customer yet.</p>
+                <p className="text-sm text-ink-faint dark:text-cream-400/70">No payments for this customer yet.</p>
               ) : (
-                <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100">
+                <ul className="divide-y divide-brand-50 dark:divide-brand-800 rounded-xl border border-brand-100 dark:border-brand-800">
                   {viewPayments.slice(0, 8).map((p) => (
                     <li key={p.id} className="flex items-center justify-between px-4 py-2.5">
-                      <span className="text-sm font-medium text-ink">
+                      <span className="text-sm font-medium text-ink dark:text-cream-100">
                         {p.payment_method === 'cash' ? 'Cash' : 'Bank transfer'} · {formatDateTime(p.payment_date)}
                       </span>
-                      <span className="font-bold text-emerald-700">{formatNaira(p.amount)}</span>
+                      <span className="font-bold text-emerald-700 dark:text-emerald-400">{formatNaira(p.amount)}</span>
                     </li>
                   ))}
                 </ul>

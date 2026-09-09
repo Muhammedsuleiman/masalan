@@ -245,9 +245,9 @@ export default function ExpensesPage() {
       )}
 
       <Card padded={false}>
-        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 border-b border-brand-100 p-4 sm:flex-row sm:items-center dark:border-brand-800">
           <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint dark:text-cream-400/50" />
             <input className="input pl-10" placeholder="Search description or category…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <select className="input !w-auto" value={businessId} onChange={(e) => setBusinessId(e.target.value)}>
@@ -273,7 +273,7 @@ export default function ExpensesPage() {
         {error && <div className="p-4"><Alert tone="error">{error}</Alert></div>}
 
         {loading ? (
-          <div className="flex items-center justify-center py-24 text-brand-600">
+          <div className="flex items-center justify-center py-24 text-brand-600 dark:text-gold-300">
             <Spinner className="h-6 w-6" />
           </div>
         ) : expenses.length === 0 ? (
@@ -307,14 +307,14 @@ export default function ExpensesPage() {
                 <tbody>
                   {visible.map((e) => (
                     <tr key={e.id}>
-                      <td className="whitespace-nowrap text-ink-soft">{formatDateTime(e.expense_date)}</td>
-                      <td className="text-ink-soft">{e.business?.name ?? '—'}</td>
+                      <td className="whitespace-nowrap text-ink-soft dark:text-cream-300">{formatDateTime(e.expense_date)}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{e.business?.name ?? '—'}</td>
                       <td><Badge tone="brown">{e.category}</Badge></td>
                       <td className="max-w-[200px]">
-                        <p className="truncate font-medium text-ink">{e.description}</p>
-                        {e.notes && <p className="truncate text-xs text-ink-faint">{e.notes}</p>}
+                        <p className="truncate font-medium text-ink dark:text-cream-100">{e.description}</p>
+                        {e.notes && <p className="truncate text-xs text-ink-faint dark:text-cream-400/70">{e.notes}</p>}
                       </td>
-                      <td className="!text-right font-bold text-red-600">{formatNaira(e.amount)}</td>
+                      <td className="!text-right font-bold text-red-600 dark:text-red-400">{formatNaira(e.amount)}</td>
                       <td>
                         <Badge tone={e.payment_method === 'cash' ? 'brown' : 'gray'}>
                           {e.payment_method === 'cash' ? 'Cash' : e.payment_method === 'bank_transfer' ? 'Bank' : '—'}
@@ -329,7 +329,7 @@ export default function ExpensesPage() {
                           <Badge tone="gray">Archived</Badge>
                         )}
                       </td>
-                      <td className="text-ink-soft">{e.recorder?.full_name || '—'}</td>
+                      <td className="text-ink-soft dark:text-cream-300">{e.recorder?.full_name || '—'}</td>
                       <td>
                         <div className="flex items-center justify-end gap-1">
                           {isOwner && (
@@ -337,7 +337,7 @@ export default function ExpensesPage() {
                               <button
                                 type="button"
                                 onClick={() => openEdit(e)}
-                                className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50"
+                                className="rounded-lg p-2 text-brand-700 transition-colors hover:bg-brand-50 dark:text-cream-300 dark:hover:bg-white/10"
                                 aria-label="Edit expense"
                               >
                                 <Pencil className="h-4 w-4" />
@@ -346,7 +346,7 @@ export default function ExpensesPage() {
                                 <button
                                   type="button"
                                   onClick={() => void voidExpense(e)}
-                                  className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-50"
+                                  className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-50 dark:text-amber-400 dark:hover:bg-amber-500/15"
                                   aria-label="Void expense"
                                   title="Void expense (excludes from reports)"
                                 >
@@ -356,7 +356,7 @@ export default function ExpensesPage() {
                               <button
                                 type="button"
                                 onClick={() => setDeleteTarget(e)}
-                                className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600"
+                                className="rounded-lg p-2 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-600 dark:text-cream-400/70 dark:hover:bg-red-500/15 dark:hover:text-red-400"
                                 aria-label="Delete expense"
                               >
                                 <Trash2 className="h-4 w-4" />

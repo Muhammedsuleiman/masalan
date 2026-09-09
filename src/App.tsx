@@ -29,7 +29,7 @@ const BUSINESS_ROLES: Role[] = ['owner', 'manager']
 
 function FullScreenLoader() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream-100">
+    <div className="flex min-h-screen items-center justify-center bg-cream-100 dark:bg-brand-950">
       <div className="flex flex-col items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500 font-display text-xl font-bold text-brand-950">
           M
