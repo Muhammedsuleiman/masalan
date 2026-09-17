@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Wallet } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Wallet, X } from 'lucide-react'
 import { fetchSale, fetchSaleItems, fetchPayments, recordPayment } from '../../services/financeService'
 import type { Payment, PaymentMethod, Sale, SaleItem } from '../../types'
 import { formatNaira, formatQuantity, formatDate, formatDateTime } from '../../lib/money'
@@ -26,6 +26,8 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
   const [error, setError] = useState<string | null>(null)
 
   const [payOpen, setPayOpen] = useState(false)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const payFormRef = useRef<HTMLDivElement | null>(null)
   const [payAmount, setPayAmount] = useState('')
   const [payMethod, setPayMethod] = useState<PaymentMethod>('cash')
   const [payDate, setPayDate] = useState('')
@@ -51,6 +53,27 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
       active = false
     }
   }, [open, saleId])
+
+  const openPaymentForm = () => {
+    setPayOpen(true)
+    requestAnimationFrame(() => {
+      const body = bodyRef.current
+      const form = payFormRef.current
+      if (!body || !form) return
+      const bodyRect = body.getBoundingClientRect()
+      const formRect = form.getBoundingClientRect()
+      const targetTop = formRect.top - bodyRect.top + body.scrollTop
+      body.scrollTo({ top: Math.max(0, targetTop - 16), behavior: 'smooth' })
+    })
+  }
+
+  const cancelPaymentForm = () => {
+    setPayOpen(false)
+    setPayAmount('')
+    setPayNote('')
+    setPayDate('')
+    setError(null)
+  }
 
   const recordPay = async () => {
     if (!sale) return
@@ -92,11 +115,25 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
       title={sale ? `Sale · ${sale.customer?.name ?? 'Customer'}` : 'Sale details'}
       subtitle={sale ? `Recorded ${formatDateTime(sale.sale_date)}` : undefined}
       size="lg"
+      bodyRef={bodyRef}
       footer={
-        sale && canRecordPayment && sale.amount_outstanding > 0 ? (
-          <Button variant="gold" onClick={() => setPayOpen((v) => !v)}>
-            <Wallet className="h-4 w-4" /> Record payment
-          </Button>
+        sale && canRecordPayment ? (
+          payOpen ? (
+            <Button variant="outline" onClick={cancelPaymentForm}>
+              <X className="h-4 w-4" /> Cancel
+            </Button>
+          ) : (
+            <>
+              <Button variant="outline" onClick={onClose}>
+                <X className="h-4 w-4" /> Close
+              </Button>
+              {sale.amount_outstanding > 0 && (
+<Button variant="gold" onClick={openPaymentForm}>
+              <Wallet className="h-4 w-4" /> Record payment
+            </Button>
+              )}
+            </>
+          )
         ) : undefined
       }
     >
@@ -105,7 +142,7 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
           <Spinner className="h-6 w-6 text-brand-600" />
         </div>
       ) : sale ? (
-        <div className="space-y-5">
+        <div className="space-y-3">
           {error && <Alert tone="error">{error}</Alert>}
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -138,7 +175,7 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
             </table>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-xl bg-cream-100/70 p-4 text-center dark:bg-white/5">
+          <div className="grid grid-cols-2 gap-2 rounded-xl bg-cream-100/70 p-3 text-center sm:grid-cols-3 dark:bg-white/5">
             <div>
               <p className="text-xs font-semibold text-ink-faint dark:text-cream-400/70">Total</p>
               <p className="text-lg font-extrabold text-brand-950 dark:text-cream-50">{formatNaira(sale.total_amount)}</p>
@@ -166,7 +203,7 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
             ) : (
               <ul className="divide-y divide-brand-50 rounded-xl border border-brand-100 dark:divide-brand-800 dark:border-brand-800">
                 {payments.map((p) => (
-                  <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
+                  <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-2">
                     <div>
                       <p className="text-sm font-semibold text-ink dark:text-cream-100">
                         {p.payment_method === 'cash' ? 'Cash' : 'Bank transfer'} — {formatNaira(p.amount)}
@@ -183,7 +220,10 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
           </div>
 
           {payOpen && sale.amount_outstanding > 0 && (
-            <div className="rounded-xl border border-gold-200 bg-gold-50/60 p-4 space-y-3 dark:border-gold-500/30 dark:bg-gold-500/10">
+            <div
+              ref={payFormRef}
+              className="rounded-xl border border-gold-200 bg-gold-50/60 p-4 space-y-3 dark:border-gold-500/30 dark:bg-gold-500/10"
+            >
               <h4 className="text-sm font-bold text-gold-800 dark:text-gold-300">
                 Record payment — outstanding {formatNaira(sale.amount_outstanding)}
               </h4>
@@ -208,7 +248,8 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
                 <label className="label">Notes</label>
                 <input className="input" value={payNote} onChange={(e) => setPayNote(e.target.value)} placeholder="Optional" />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={cancelPaymentForm}>Cancel</Button>
                 <Button onClick={() => void recordPay()} loading={paying}>
                   <Wallet className="h-4 w-4" /> Save payment
                 </Button>
@@ -225,8 +266,8 @@ export function SaleDetailModal({ open, saleId, onClose, onChanged, canRecordPay
 
 function InfoCell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-cream-100/70 p-3 dark:bg-white/5">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint dark:text-cream-400/70">{label}</p>
+    <div className="rounded-lg bg-cream-100/70 p-2 dark:bg-white/5">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-faint dark:text-cream-400/70">{label}</p>
       <p className="mt-0.5 truncate text-sm font-bold text-brand-950 dark:text-cream-50">{value}</p>
     </div>
   )
