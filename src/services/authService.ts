@@ -60,7 +60,8 @@ export async function signOut(): Promise<void> {
 }
 
 export async function sendPasswordResetEmail(email: string): Promise<{ error: string | null }> {
-  const redirectTo = `${window.location.origin}/reset-password`
+  const baseUrl = (import.meta.env.VITE_APP_URL ?? window.location.origin).replace(/\/+$/, '')
+  const redirectTo = `${baseUrl}/reset-password`
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
   if (error) return { error: getFriendlyError(error) }
   return { error: null }
